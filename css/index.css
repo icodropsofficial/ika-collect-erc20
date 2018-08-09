@@ -1,11 +1,169 @@
-.container {
-  margin: 20px;
+@font-face {
+  font-family: PFDinTextCondPro;
+  src: url(../fonts/PFDinTextCondPro-Regular.ttf);
+  font-weight: normal;
 }
 
-input {
-  display: block;
-  margin-bottom: 10px;
-  min-width: 380px;
-  font-size: 18px;
-  padding: 8px;
+@font-face {
+  font-family: PFDinTextCondPro;
+  src: url(../fonts/PFDinTextCondPro-Medium.ttf);
+  font-weight: 500;
 }
+
+body {
+  background: rgb(246, 246, 246);
+  font-family: PFDinTextCondPro;
+  font-size: 24px;
+}
+
+h1 {
+  font-family: PFDinTextCondPro;
+  font-weight: 400;
+  color: #424242;
+  font-size: 50px;
+  font-weight: 400;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+b {
+  font-weight: 500;
+}
+
+.card {
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(0,0,0,.1);
+  text-align: center;
+  padding-top: 10px;
+  padding-bottom: 9px;
+  border: none;
+  border-radius: 0;
+  -webkit-appearance: none;
+  font-size: 24px;
+  color: #424242;
+  margin: 0;
+  box-sizing: border-box;
+  max-width: 100%;
+  width: 100%;
+  height: 100%;
+  animation: appear .4s linear;
+}
+
+select.card option {
+  text-align: center;
+}
+
+.cards.row {
+  padding-top: 10px;
+}
+
+.cards div:first-child {
+}
+
+.card#add {
+  font-size: 76px;
+  line-height: 32px;
+  padding: 16px 0 11px 0;
+  color: #c8c8c8;
+  cursor: pointer;
+  outline: none;
+}
+
+#setall {
+  height: 30px;
+  background-color: #0051e5;
+  color: white;
+  padding: 2px;
+  cursor: pointer;
+  outline: none;
+  transition: all .2s;
+}
+
+#setall:active {
+  transition: all .2s;
+  transform: scale(0.9);
+}
+
+#download:active  {
+  transition: all .2s;
+  transform: scale(0.98);
+}
+
+.fee, .amount {
+  font-weight: 500;
+}
+
+.fee::placeholder, .amount::placeholder {
+  font-weight: 300;
+}
+
+.address {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+input[type='number'] {
+    -moz-appearance:textfield;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+@media (max-width: 768px) {
+  .cards div {
+  }
+  .setall div:first-child {
+    display: none;
+  }
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+  } to {
+    opacity: 1;
+  }
+}
+
+.narrow {
+  padding-top: 2px;
+  padding-bottom: 0px;
+}
+
+.semi-narrow {
+  padding-top: 8px;
+  padding-bottom: 3px;
+}
+
+.separator {
+  height: 35px;
+}
+
+#download {
+  background-color:  #0051e5;
+  color: white;
+  margin-bottom: 50px;
+  outline: none;
+  transition: all .2s;
+}
+
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid white;
+  display: inline-block;
+  background: white;
+  outline: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,.1);
+  transition: all .1s;
+}
+
+input[type="checkbox"]:checked {
+  background-color:  #0051e5;
+  transition: all .1s;
+}
+

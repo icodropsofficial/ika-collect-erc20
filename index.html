@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <title>いか IKA</title>
@@ -6,21 +7,116 @@
 
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/index.css">
-    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono" rel="stylesheet">
+    <link rel="stylesheet" href="css/bootstrap-grid.min.css">
 
     <meta name="robots" content="noarchive, noimageindex">
   </head>
   <body>
     <div class="container">
-      <input id="key" type="text" placeholder="privkey">
+      <div class="row justify-content-center">
+        <div class="col-12 col-lg-10">
+          <h1>IKA Web</h1>
 
-      <input class="dest" type="text" placeholder="address">
-      <input class="dest" type="text" placeholder="address">
-      <input class="dest" type="text" placeholder="address">
-      <input class="dest" type="text" placeholder="address">
-      <input class="dest" type="text" placeholder="address">
+          <div class="row">
+            <div class="col-md">
 
-      <button id="send">send!</button>
+              <p><b>Usage</b><br>
+              TBD
+              </p>
+            </div>
+          </div>
+
+          <form id="config">
+            <div class="wallet cards row">
+
+              <div class="col-md-6">
+                <input type="text" class="card address" placeholder="ETH address (0x012345...)" name="address" required />
+              </div>
+
+              <div class="col-md-2">
+                <input type="number" class="card amount" placeholder="amount (eth)" name="amount" step="0.00000001" min="0" required />
+              </div>
+
+              <div class="col-md-2">
+                <input type="number" class="card fee" placeholder="fee (gwei)" name="fee" step="1" min="0" />
+              </div>
+
+              <div class="col-md-2">
+              </div>
+
+            </div>
+
+            <div class="plus cards row">
+
+              <div class="col-md-6">
+                <button class="card" id="add" type="button">
+                  +
+                </button>
+              </div>
+            </div>
+
+            <div class="setall cards row">
+
+              <div class="col-md-6">
+              </div>
+
+              <div class="col-md-2">
+                <input type="number" class="card amount" placeholder="amount (eth)" id="setall-amount" step="0.00000001" min="0" />
+              </div>
+
+              <div class="col-md-2">
+                <input type="number" class="card fee" placeholder="fee (gwei)" id="setall-fee" step="1" min="0" />
+              </div>
+
+            </div>
+
+            <div class="cards row">
+
+              <div class="col-md-6 col">
+              </div>
+
+              <div class="col-md-2 col">
+                <button class="card" id="setall" type="button">set all</button>
+              </div>
+
+              <div class="col-md-2">
+              </div>
+
+              <div class="col-md-2">
+              </div>
+
+            </div>
+
+            <div class="separator"></div>
+
+            <div class="cards row">
+              <div class="col-md-2 d-none d-md-block"></div>
+              <div class="col-md-8 align-self-center col">
+                <input type="text" class="card narrow" placeholder="private key" name="privkey" required />
+              </div>
+              <div class="col-md-2 d-none d-md-block"></div>
+            </div>
+
+            <div class="cards row">
+              <div class="col-md-2 d-none d-md-block"></div>
+              <div class="col-md-8 align-self-center col">
+                <label><input type="checkbox" class="semi-narrow" name="agree" required /> I acknowledge my responsibility for any possible value loss</label>
+              </div>
+              <div class="col-md-2 d-none d-md-block"></div>
+            </div>
+
+            <div class="cards row">
+              <div class="col-md-2 d-none d-md-block"></div>
+              <div class="col-md-8 align-self-center col">
+                <button class="card semi-narrow" id="download">fire!</button>
+              </div>
+              <div class="col-md-2 d-none d-md-block"></div>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
     </div>
 
     <script src="js/index.js"></script>
