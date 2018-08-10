@@ -40,7 +40,7 @@ window.addEventListener("load", function() {
       </div>
 
       <div class="col-md-2">
-      <input type="number" class="card fee" placeholder="fee (gwei)" name="fee" step="1" min="0" />
+      <input type="number" class="card fee" placeholder="fee (gwei)" name="fee" step="1" min="0" required />
       </div>
 
       <div class="col-md-2 middle">
