@@ -5,12 +5,14 @@ window.addEventListener("load", function() {
   var plus = document.getElementById("add");
   var setAll = document.getElementById("setall");
   var form = document.getElementById("config");
+  var keyEl = document.getElementsByName("privkey")[0];
 
   form.onsubmit = () => {
     sendEth(web3);
 
     return false;
   };
+
 
   //document.getElementById("send").addEventListener("click", () => {
     //sendEth(web3);
@@ -76,33 +78,38 @@ function sendEth(web3) {
 
     setWaiting();
 
+    var delay = 0;
     web3.eth.getTransactionCount(web3.eth.accounts.privateKeyToAccount(`0x${data.privkey}`).address).then(count => {
       data.transactions.forEach((txn, i, a) => {
-        if (web3.utils.isAddress(txn.address)) {
-          var tx = new Tx();
-          tx.gasPrice = new BN(web3.utils.toWei(txn.fee, "shannon"));
-          tx.gasLimit = 21000;
-          tx.value = new BN(web3.utils.toWei(txn.amount, "ether"));
-          tx.to = txn.address;
-          tx.nonce = count++;
-          tx.sign(privateKey);
+        // XXX: to reduce nonce on fail
+        window.setTimeout(() => {
+          if (web3.utils.isAddress(txn.address)) {
+            var tx = new Tx();
+            tx.gasPrice = new BN(web3.utils.toWei(txn.fee, "shannon"));
+            tx.gasLimit = 21000;
+            tx.value = new BN(web3.utils.toWei(txn.amount, "ether"));
+            tx.to = txn.address;
+            tx.nonce = count++;
+            tx.sign(privateKey);
 
-          var serializedTx = tx.serialize();
+            var serializedTx = tx.serialize();
 
-          confirmations[txn.address] = 0;
+            confirmations[txn.address] = 0;
 
-          web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'))
-            .on('receipt', (r) => {
-              showReceipt(r, order[txn.address]);
-            }).on("error", (e, r) => {
-              console.log(e);
-              count--;
-              showError(e, order[txn.address], r);
-            });
-        } else {
-          document.querySelectorAll("span.middle")[order[txn.address]].innerText = "❌";
-          document.querySelectorAll("span.middle")[order[txn.address]].title = `${txn.address} is not a valid Ethereum address!!!!`;
-        }
+            web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'))
+              .on('receipt', (r) => {
+                console.log(r);
+                showReceipt(r, order[txn.address]);
+              }).on("error", (e, r) => {
+                console.log(e);
+                count--;
+                showError(e, order[txn.address], r);
+              });
+          } else {
+            document.querySelectorAll("span.middle")[order[txn.address]].innerText = "❌";
+            document.querySelectorAll("span.middle")[order[txn.address]].title = `${txn.address} is not a valid Ethereum address!!!!`;
+          }
+        }, delay++ * 400);
       });
     });
   });
@@ -113,16 +120,16 @@ function showError(e, order, r) {
     document.getElementsByClassName("wallet")[order].lastElementChild.lastElementChild.innerText = "❌";
     document.getElementsByClassName("wallet")[order].lastElementChild.lastElementChild.title = e;
   } else {
-    document.getElementsByClassName("wallet")[order].lastElementChild.lastElementChild.innerHTML = `<a target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}">❌</a>`;
+    document.getElementsByClassName("wallet")[order].lastElementChild.lastElementChild.innerHTML = `<a rel="noopener" target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}">❌</a>`;
   }
 }
 
 function showReceipt(r, order) {
   if (r.status) {
     // TODO: change to mainnet
-    document.getElementsByClassName("wallet")[order].lastElementChild.lastElementChild.innerHTML = `<a target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}">✅</a>`;
+    document.getElementsByClassName("wallet")[order].lastElementChild.lastElementChild.innerHTML = `<a rel="noopener" target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}">✅</a>`;
   } else {
-    document.getElementsByClassName("wallet")[order].lastElementChild.lastElementChild.innerHTML = `<a target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}">❌</a>`;
+    document.getElementsByClassName("wallet")[order].lastElementChild.lastElementChild.innerHTML = `<a rel="noopener" target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}">❌</a>`;
   }
 }
 
