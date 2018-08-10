@@ -13,10 +13,19 @@ window.addEventListener("load", function() {
     return false;
   };
 
+  keyEl.addEventListener("input", () => {
+    key = keyEl.value;
+    if (!key.startsWith("0x")) {
+      key = "0x" + key;
+    }
+    if (key.length != 66) {
+      return
+    }
 
-  //document.getElementById("send").addEventListener("click", () => {
-    //sendEth(web3);
-  //});
+    web3.eth.getTransactionCount(web3.eth.accounts.privateKeyToAccount(`${key}`).address).then(count => {
+      document.getElementsByName("nonce")[0].value = count;
+    });
+  });
 
   plus.addEventListener("click", () => {
     var row = document.createElement("div");
@@ -79,38 +88,38 @@ function sendEth(web3) {
     setWaiting();
 
     var delay = 0;
-    web3.eth.getTransactionCount(web3.eth.accounts.privateKeyToAccount(`0x${data.privkey}`).address).then(count => {
-      data.transactions.forEach((txn, i, a) => {
-        // XXX: to reduce nonce on fail
-        window.setTimeout(() => {
-          if (web3.utils.isAddress(txn.address)) {
-            var tx = new Tx();
-            tx.gasPrice = new BN(web3.utils.toWei(txn.fee, "shannon"));
-            tx.gasLimit = 21000;
-            tx.value = new BN(web3.utils.toWei(txn.amount, "ether"));
-            tx.to = txn.address;
-            tx.nonce = count++;
-            tx.sign(privateKey);
+    count = parseInt(data.nonce);
 
-            var serializedTx = tx.serialize();
+    data.transactions.forEach((txn, i, a) => {
+      // XXX: to reduce nonce on fail
+      window.setTimeout(() => {
+        if (web3.utils.isAddress(txn.address)) {
+          var tx = new Tx();
+          tx.gasPrice = new BN(web3.utils.toWei(txn.fee, "shannon"));
+          tx.gasLimit = 21000;
+          tx.value = new BN(web3.utils.toWei(txn.amount, "ether"));
+          tx.to = txn.address;
+          tx.nonce = count++;
+          tx.sign(privateKey);
 
-            confirmations[txn.address] = 0;
+          var serializedTx = tx.serialize();
 
-            web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'))
-              .on('receipt', (r) => {
-                console.log(r);
-                showReceipt(r, order[txn.address]);
-              }).on("error", (e, r) => {
-                console.log(e);
-                count--;
-                showError(e, order[txn.address], r);
-              });
-          } else {
-            document.querySelectorAll("span.middle")[order[txn.address]].innerText = "❌";
-            document.querySelectorAll("span.middle")[order[txn.address]].title = `${txn.address} is not a valid Ethereum address!!!!`;
-          }
-        }, delay++ * 400);
-      });
+          confirmations[txn.address] = 0;
+
+          web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'))
+            .on('receipt', (r) => {
+              console.log(r);
+              showReceipt(r, order[txn.address]);
+            }).on("error", (e, r) => {
+              console.log(e);
+              count--;
+              showError(e, order[txn.address], r);
+            });
+        } else {
+          document.querySelectorAll("span.middle")[order[txn.address]].innerText = "❌";
+          document.querySelectorAll("span.middle")[order[txn.address]].title = `${txn.address} is not a valid Ethereum address!!!!`;
+        }
+      }, delay++ * 400);
     });
   });
 }
