@@ -6,6 +6,12 @@ window.addEventListener("load", function() {
   var setAll = document.getElementById("setall");
   var form = document.getElementById("config");
 
+  form.onsubmit = () => {
+    sendEth(web3);
+
+    return false;
+  };
+
   //document.getElementById("send").addEventListener("click", () => {
     //sendEth(web3);
   //});
@@ -56,15 +62,17 @@ window.addEventListener("load", function() {
 
 function sendEth(web3) {
   getInputData().then(data => {
-    if (data.privKey.startsWith("0x")) {
-      data.privKey = data.privKey.slice(2);
+    console.log(data);
+    return;
+    if (data.privkey.startsWith("0x")) {
+      data.privkey = data.privKey.slice(2);
     }
 
     var BN = web3.utils.BN;
     var Tx = require('ethereumjs-tx');
-    var privateKey = new Buffer(data.privKey, 'hex')
+    var privateKey = new Buffer(data.privkey, 'hex')
 
-    web3.eth.getTransactionCount(web3.eth.accounts.privateKeyToAccount(`0x${data.privKey}`).address).then(count => {
+    web3.eth.getTransactionCount(web3.eth.accounts.privateKeyToAccount(`0x${data.privkey}`).address).then(count => {
       data.addrs.forEach((address, i, a) => {
         if (web3.utils.isAddress(address)) {
           var tx = new Tx();
@@ -95,17 +103,29 @@ function next(web3js, reqs) {
 
 function getInputData() {
   return new Promise(resolve => {
-    var key = document.getElementById("key").value;
+    var data = new FormData(document.getElementById("config"));
+    var parsed = {transactions: []};
+    var txn = {};
 
-    var inputs = [];
-    var arr = document.getElementsByClassName("dest");
+    console.log(data);
+    for (var pair of data) {
+      if (pair[1] == "") {
+        continue;
+      }
 
-    for (var i = 0; i < arr.length; i++) {
-      inputs.push(arr[i].value);
+      if (["address", "amount", "fee"].includes(pair[0])) {
+        if (pair[0] == "address" && Object.keys(txn).length != 0) {
+          parsed.transactions.push(txn);
+          txn = {};
+        }
 
-      if (i == arr.length - 1) {
-        resolve({privKey: key, addrs: inputs});
+        txn[pair[0]] = pair[1];
+      } else {
+        parsed[pair[0]] = pair[1];
       }
     }
+
+    parsed.transactions.push(txn);
+    resolve(parsed);
   });
 }
