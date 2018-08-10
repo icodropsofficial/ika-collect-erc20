@@ -167,3 +167,9 @@ input[type="checkbox"]:checked {
   transition: all .1s;
 }
 
+.middle {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 2;
+  text-align: center;
+}

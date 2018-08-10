@@ -2,8 +2,55 @@ window.addEventListener("load", function() {
   var Web3 = require("web3");
   var web3 = new Web3("https://rinkeby.infura.io/v3/84e0a3375afd4f57b4753d39188311d7");
 
-  document.getElementById("send").addEventListener("click", () => {
-    sendEth(web3);
+  var plus = document.getElementById("add");
+  var setAll = document.getElementById("setall");
+  var form = document.getElementById("config");
+
+  //document.getElementById("send").addEventListener("click", () => {
+    //sendEth(web3);
+  //});
+
+  plus.addEventListener("click", () => {
+    var row = document.createElement("div");
+    row.className = "wallet cards row";
+    row.innerHTML = `
+      <div class="col-md-6">
+      <input type="text" class="card address" placeholder="ETH address (0x012345...)" name="address" required />
+      </div>
+
+      <div class="col-md-2">
+      <input type="number" class="card amount" placeholder="amount (eth)" name="amount" step="0.00000001" min="0" required />
+      </div>
+
+      <div class="col-md-2">
+      <input type="number" class="card fee" placeholder="fee (gwei)" name="fee" step="1" min="0" />
+      </div>
+
+      <div class="col-md-2 middle">
+      <span class="middle">
+      ⚙️
+      </span>
+      </div>
+      `;
+
+    document.getElementById("config").insertBefore(row, plus.parentElement.parentElement);
+
+    return false;
+  });
+
+  setAll.addEventListener("click", () => {
+    var amount = document.getElementById("setall-amount").value;
+    var fee = document.getElementById("setall-fee").value;
+
+    var amounts = document.getElementsByClassName("amount");
+    var fees = document.getElementsByClassName("fee");
+
+    for (var i = 0; i < amounts.length; i++) {
+      amounts[i].value = amount;
+      fees[i].value = fee;
+    }
+
+    return false;
   });
 });
 
