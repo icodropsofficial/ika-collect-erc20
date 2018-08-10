@@ -62,10 +62,8 @@ window.addEventListener("load", function() {
 
 function sendEth(web3) {
   getInputData().then(data => {
-    console.log(data);
-    return;
     if (data.privkey.startsWith("0x")) {
-      data.privkey = data.privKey.slice(2);
+      data.privkey = data.privkey.slice(2);
     }
 
     var BN = web3.utils.BN;
@@ -73,13 +71,13 @@ function sendEth(web3) {
     var privateKey = new Buffer(data.privkey, 'hex')
 
     web3.eth.getTransactionCount(web3.eth.accounts.privateKeyToAccount(`0x${data.privkey}`).address).then(count => {
-      data.addrs.forEach((address, i, a) => {
-        if (web3.utils.isAddress(address)) {
+      data.transactions.forEach((txn, i, a) => {
+        if (web3.utils.isAddress(txn.address)) {
           var tx = new Tx();
-          tx.gasPrice = new BN(web3.utils.toWei("12", "shannon"));
+          tx.gasPrice = new BN(web3.utils.toWei(txn.fee, "shannon"));
           tx.gasLimit = 21000;
-          tx.value = new BN(web3.utils.toWei("0.001", "ether"));
-          tx.to = address;
+          tx.value = new BN(web3.utils.toWei(txn.amount, "ether"));
+          tx.to = txn.address;
           tx.nonce = count++;
           tx.sign(privateKey);
 
@@ -88,6 +86,7 @@ function sendEth(web3) {
           web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'))
             .on('receipt', console.log).on("error", console.log);
         } else {
+          // cross
           console.log(`${address} is not a valid Ethereum address!!!!`);
         }
       });
@@ -107,7 +106,6 @@ function getInputData() {
     var parsed = {transactions: []};
     var txn = {};
 
-    console.log(data);
     for (var pair of data) {
       if (pair[1] == "") {
         continue;
