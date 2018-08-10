@@ -95,7 +95,8 @@ function sendEth(web3) {
             .on('receipt', (r) => {
               showReceipt(r, order[txn.address]);
             }).on("error", (e, r) => {
-              nonce--;
+              console.log(e);
+              count--;
               showError(e, order[txn.address], r);
             });
         } else {
@@ -112,19 +113,16 @@ function showError(e, order, r) {
     document.getElementsByClassName("wallet")[order].lastElementChild.lastElementChild.innerText = "❌";
     document.getElementsByClassName("wallet")[order].lastElementChild.lastElementChild.title = e;
   } else {
-    document.getElementsByClassName("wallet")[order].lastElementChild.lastElementChild.innerHTML = `<a class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}">❌</a>`;
+    document.getElementsByClassName("wallet")[order].lastElementChild.lastElementChild.innerHTML = `<a target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}">❌</a>`;
   }
 }
 
 function showReceipt(r, order) {
   if (r.status) {
-    console.log(document.getElementsByClassName("wallet")[order]);
-    console.log(document.getElementsByClassName("wallet")[order].lastElementChild.lastElementChild);
     // TODO: change to mainnet
-    document.getElementsByClassName("wallet")[order].lastElementChild.lastElementChild.innerHTML = `<a class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}">✅</a>`;
+    document.getElementsByClassName("wallet")[order].lastElementChild.lastElementChild.innerHTML = `<a target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}">✅</a>`;
   } else {
-    console.log(2);
-    document.getElementsByClassName("wallet")[order].lastElementChild.lastElementChild.innerHTML = `<a class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}">❌</a>`;
+    document.getElementsByClassName("wallet")[order].lastElementChild.lastElementChild.innerHTML = `<a target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}">❌</a>`;
   }
 }
 
