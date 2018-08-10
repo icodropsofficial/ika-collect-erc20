@@ -61,14 +61,20 @@ window.addEventListener("load", function() {
 });
 
 function sendEth(web3) {
-  getInputData().then(data => {
+  getInputData().then((dataAndOrder) => {
+    var data = dataAndOrder[0];
+    var order = dataAndOrder[1];
+
     if (data.privkey.startsWith("0x")) {
       data.privkey = data.privkey.slice(2);
     }
+    console.log(order);
 
     var BN = web3.utils.BN;
     var Tx = require('ethereumjs-tx');
-    var privateKey = new Buffer(data.privkey, 'hex')
+    var privateKey = new Buffer(data.privkey, 'hex');
+
+    setWaiting();
 
     web3.eth.getTransactionCount(web3.eth.accounts.privateKeyToAccount(`0x${data.privkey}`).address).then(count => {
       data.transactions.forEach((txn, i, a) => {
@@ -84,28 +90,43 @@ function sendEth(web3) {
           var serializedTx = tx.serialize();
 
           web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'))
-            .on('receipt', console.log).on("error", console.log);
+            .on('receipt', (r) => {
+              showReceipt(r, order);
+            }).on("error", (e) => {
+              showError(e, order[txn.address]);
+              console.log(e);
+            });
         } else {
-          // cross
-          console.log(`${address} is not a valid Ethereum address!!!!`);
+          document.querySelectorAll("span.middle")[order[txn.address]].innerText = "❌";
+          console.log(`${txn.address} is not a valid Ethereum address!!!!`);
         }
       });
     });
   });
 }
 
-function next(web3js, reqs) {
-  var batch = web3.createBatch();
-  batch.add(reqs[0]);
-  batch.execute();
+function showError(e, order) {
+  alert(e);
+}
+
+function showReceipt(r, order) {
+  document.getElementsByClassName("wallet")[order[r.to]].lastElementChild.lastElementChild.innerText = "✅";
+}
+
+function setWaiting() {
+  document.querySelectorAll("span.middle").forEach(el => {
+    el.innerText = "🕟";
+  });
 }
 
 function getInputData() {
   return new Promise(resolve => {
     var data = new FormData(document.getElementById("config"));
     var parsed = {transactions: []};
+    var order = {};
     var txn = {};
 
+    var i = 0;
     for (var pair of data) {
       if (pair[1] == "") {
         continue;
@@ -114,6 +135,8 @@ function getInputData() {
       if (["address", "amount", "fee"].includes(pair[0])) {
         if (pair[0] == "address" && Object.keys(txn).length != 0) {
           parsed.transactions.push(txn);
+
+          order[txn.address] = i++;
           txn = {};
         }
 
@@ -124,6 +147,8 @@ function getInputData() {
     }
 
     parsed.transactions.push(txn);
-    resolve(parsed);
+    order[txn.address] = i++;
+
+    resolve([parsed, order]);
   });
 }
