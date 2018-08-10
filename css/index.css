@@ -178,3 +178,7 @@ input[type="checkbox"]:checked {
 a.receipt {
   text-decoration: none;
 }
+
+a {
+  color:  #0051e5;
+}

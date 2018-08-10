@@ -21,7 +21,16 @@
             <div class="col-md">
 
               <p><b>Usage</b><br>
-              TBD
+              This tool helps to distribute Ethereum to a large amount of addresses. Fill in the fields: address (should start with 0x), ETH amount, gas price (gwei), your private key (will only be used to send Ethereum, we DO NOT HAVE ACCESS TO YOUR KEY). Nonce will be calculated automatically. Check the checkbox and press 'fire!'. Wait for clock icons to get replaced with transactions' status. You can hover over a cross to see why the transaction has failed, or click a tick to see the transaction on Etherscan. Note that Etherscan sees if a transaction is confirmed a bit later, so don't get scared if you see a green tick and 'Pending' on Etherscan.<br>In some (very rare) cases a transaction may get confirmed, but then fall out of the main chain if a fork occurs, so a tick means that a transaction will <i>almost definitely</i> stay in the chain.
+              </p>
+              <p>
+              <b>Disclaimer</b><br>
+              We are not responsible for ANY value loss happened while using the tool. Everything is processed in your browser, your key is never sent to any server (open your browser developer tools and check the 'Network' tab to check). If your internet connection/node/etc fails, it's your responsibility.<br>
+              IN NO EVENT SHALL THE AUTHOR OF THIS TOOL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+              </p>
+              <p>
+              <b>Authors:</b>
+              <a href="https://github.com/26000">26000</a> (<a href="https://icodrops.com/">ICODROPS</a>)
               </p>
             </div>
           </div>
@@ -95,7 +104,15 @@
             <div class="cards row">
               <div class="col-md-2 d-none d-md-block"></div>
               <div class="col-md-8 align-self-center col">
-                <input type="text" class="card narrow" placeholder="private key" name="privkey" required />
+                <input type="number" class="card narrow" placeholder="nonce" name="nonce" required />
+              </div>
+              <div class="col-md-2 d-none d-md-block"></div>
+            </div>
+
+            <div class="cards row">
+              <div class="col-md-2 d-none d-md-block"></div>
+              <div class="col-md-8 align-self-center col">
+                <input type="password" class="card narrow" placeholder="private key" name="privkey" required />
               </div>
               <div class="col-md-2 d-none d-md-block"></div>
             </div>
