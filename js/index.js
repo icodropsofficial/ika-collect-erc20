@@ -7,12 +7,6 @@ window.addEventListener("load", function() {
   var form = document.getElementById("config");
   var keyEl = document.getElementsByName("privkey")[0];
 
-  form.onsubmit = () => {
-    sendEth(web3);
-
-    return false;
-  };
-
   const updateNonce = () => {
     key = keyEl.value;
     if (!key.startsWith("0x")) {
@@ -25,6 +19,12 @@ window.addEventListener("load", function() {
     web3.eth.getTransactionCount(web3.eth.accounts.privateKeyToAccount(`${key}`).address).then(count => {
       document.getElementsByName("nonce")[0].value = count;
     });
+  };
+
+  form.onsubmit = () => {
+    sendEth(web3, updateNonce);
+
+    return false;
   };
 
   keyEl.addEventListener("input", updateNonce);
@@ -75,7 +75,7 @@ window.addEventListener("load", function() {
   });
 });
 
-function sendEth(web3) {
+function sendEth(web3, updateNonce) {
   getInputData().then(data => {
     var confirmations = {};
     if (data.privkey.startsWith("0x")) {
@@ -118,8 +118,8 @@ function sendEth(web3) {
               showError(e, txn.address, r);
             });
         } else {
-          getWalletByAddress(address).innerText = "❌";
-          getWalletByAddress(address).title = `${txn.address} is not a valid Ethereum address!!!!`;
+          getWalletByAddress(txn.address).innerText = "❌";
+          getWalletByAddress(txn.address).title = `${txn.address} is not a valid Ethereum address!!!!`;
         }
       }, delay++ * 400);
     });
@@ -127,33 +127,36 @@ function sendEth(web3) {
 }
 
 function showError(e, address, r) {
+  var wallet = getWalletByAddress(address);
   if (!r) {
-    getWalletByAddress(address).lastElementChild.lastElementChild.innerText = "❌";
+    wallet.lastElementChild.lastElementChild.innerText = "❌";
   } else {
-    getWalletByAddress(address).lastElementChild.lastElementChild.innerHTML = `<a rel="noopener" target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}">❌</a>`;
+    wallet.lastElementChild.lastElementChild.innerHTML = `<a rel="noopener" target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}">❌</a>`;
   }
   for (var i = 0; i <= 2; i++) {
-    getWalletByAddress(address).children[i].firstElementChild.className += " fail";
+    wallet.children[i].firstElementChild.className += " fail";
   }
 }
 
 function showReceipt(r, address) {
   if (r.status) {
+    var wallet = getWalletByAddress(address);
     // TODO: change to mainnet
-    getWalletByAddress.lastElementChild.lastElementChild.innerHTML = `<a rel="noopener" target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}">✅</a>`;
+    wallet.lastElementChild.lastElementChild.innerHTML = `<a rel="noopener" target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}">✅</a>`;
     for (var i = 0; i <= 2; i++) {
-      getWalletByAddress(address).children[i].firstElementChild.required = "false";
-      getWalletByAddress(address).children[i].firstElementChild.disabled = "true";
-      getWalletByAddress(address).children[i].firstElementChild.className += " success";
+      wallet.children[i].firstElementChild.required = "false";
+      wallet.children[i].firstElementChild.disabled = "true";
+      wallet.children[i].firstElementChild.className += " success";
     }
+    wallet.className += " success";
   } else {
     getWalletByAddress(address).lastElementChild.lastElementChild.innerHTML = `<a rel="noopener" target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}">❌</a>`;
   }
 }
 
 function setWaiting() {
-  document.querySelectorAll("span.middle").forEach(el => {
-    el.innerText = "🕟";
+  document.querySelectorAll(".wallet:not(.success)").forEach(el => {
+    el.lastElementChild.lastElementChild.innerText = "🕟";
   });
 }
 
