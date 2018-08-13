@@ -113,45 +113,44 @@ function sendEth(web3) {
           web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'))
             .on('receipt', (r) => {
               console.log(r);
-              showReceipt(r, order[txn.address]);
+              showReceipt(r, txn.address);
               updateNonce();
             }).on("error", (e, r) => {
               console.log(e);
               count--;
-              showError(e, order[txn.address], r);
+              showError(e, txn.address, r);
             });
         } else {
-          document.querySelectorAll("span.middle")[order[txn.address]].innerText = "❌";
-          document.querySelectorAll("span.middle")[order[txn.address]].title = `${txn.address} is not a valid Ethereum address!!!!`;
+          getWalletByAddress(address).innerText = "❌";
+          getWalletByAddress(address).title = `${txn.address} is not a valid Ethereum address!!!!`;
         }
       }, delay++ * 400);
     });
   });
 }
 
-function showError(e, order, r) {
+function showError(e, address, r) {
   if (!r) {
-    document.getElementsByClassName("wallet")[order].lastElementChild.lastElementChild.innerText = "❌";
+    getWalletByAddress(address).lastElementChild.lastElementChild.innerText = "❌";
   } else {
-    document.getElementsByClassName("wallet")[order].lastElementChild.lastElementChild.innerHTML = `<a rel="noopener" target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}">❌</a>`;
+    getWalletByAddress(address).lastElementChild.lastElementChild.innerHTML = `<a rel="noopener" target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}">❌</a>`;
   }
   for (var i = 0; i <= 2; i++) {
-    document.getElementsByClassName("wallet")[order].children[i].firstElementChild.className += " fail";
+    getWalletByAddress(address).children[i].firstElementChild.className += " fail";
   }
 }
 
-function showReceipt(r, order) {
+function showReceipt(r, address) {
   if (r.status) {
     // TODO: change to mainnet
     document.getElementsByClassName("wallet")[order].lastElementChild.lastElementChild.innerHTML = `<a rel="noopener" target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}">✅</a>`;
     for (var i = 0; i <= 2; i++) {
-      document.getElementsByClassName("wallet")[order].children[i].firstElementChild.required = "false";
-      document.getElementsByClassName("wallet")[order].children[i].firstElementChild.disabled = "true";
-      document.getElementsByClassName("wallet")[order].children[i].firstElementChild.className += " success";
+      getWalletByAddress(address).children[i].firstElementChild.required = "false";
+      getWalletByAddress(address).children[i].firstElementChild.disabled = "true";
+      getWalletByAddress(address).children[i].firstElementChild.className += " success";
     }
-    document.getElementsByClassName("wallet")[order].className = "success-wallet cards row";
   } else {
-    document.getElementsByClassName("wallet")[order].lastElementChild.lastElementChild.innerHTML = `<a rel="noopener" target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}">❌</a>`;
+    getWalletByAddress(address).lastElementChild.lastElementChild.innerHTML = `<a rel="noopener" target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}">❌</a>`;
   }
 }
 
@@ -193,4 +192,15 @@ function getInputData() {
 
     resolve([parsed, order]);
   });
+}
+
+function getWalletByAddress(address) {
+  var nodes = document.querySelectorAll("input.address");
+  for (var i = 0; i < nodes.length; i++) {
+    console.log(nodes[i].value);
+    if (nodes[i].value == address) {
+      return nodes[i].parentElement.parentElement;
+    }
+  }
+  return document.createElement("input");
 }
