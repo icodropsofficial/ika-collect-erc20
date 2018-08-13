@@ -150,6 +150,19 @@ input::-webkit-inner-spin-button {
   transition: all .2s;
 }
 
+#recalculate {
+  background-color:  #0051e5;
+  color: white;
+  outline: none;
+  transition: all .2s;
+  width: 50%;
+}
+
+#recalculate:active {
+  transition: all .2s;
+  transform: scale(0.9);
+}
+
 input[type="checkbox"] {
   appearance: none;
   -webkit-appearance: none;
@@ -181,4 +194,16 @@ a.receipt {
 
 a {
   color:  #0051e5;
+}
+
+input[disabled] {
+  text-decoration: line-through;
+}
+
+input.success, input.fail.success {
+  background: #b5ffda;
+}
+
+.fail {
+  background: #e86c6e;
 }
