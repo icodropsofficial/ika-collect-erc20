@@ -76,10 +76,7 @@ window.addEventListener("load", function() {
 });
 
 function sendEth(web3) {
-  getInputData().then((dataAndOrder) => {
-    var data = dataAndOrder[0];
-    var order = dataAndOrder[1];
-
+  getInputData().then(data => {
     var confirmations = {};
     if (data.privkey.startsWith("0x")) {
       data.privkey = data.privkey.slice(2);
@@ -143,7 +140,7 @@ function showError(e, address, r) {
 function showReceipt(r, address) {
   if (r.status) {
     // TODO: change to mainnet
-    document.getElementsByClassName("wallet")[order].lastElementChild.lastElementChild.innerHTML = `<a rel="noopener" target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}">✅</a>`;
+    getWalletByAddress.lastElementChild.lastElementChild.innerHTML = `<a rel="noopener" target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}">✅</a>`;
     for (var i = 0; i <= 2; i++) {
       getWalletByAddress(address).children[i].firstElementChild.required = "false";
       getWalletByAddress(address).children[i].firstElementChild.disabled = "true";
@@ -164,7 +161,6 @@ function getInputData() {
   return new Promise(resolve => {
     var data = new FormData(document.getElementById("config"));
     var parsed = {transactions: []};
-    var order = {};
     var txn = {};
 
     var i = 0;
@@ -176,8 +172,6 @@ function getInputData() {
       if (["address", "amount", "fee"].includes(pair[0])) {
         if (pair[0] == "address" && Object.keys(txn).length != 0) {
           parsed.transactions.push(txn);
-
-          order[txn.address] = i++;
           txn = {};
         }
 
@@ -188,9 +182,7 @@ function getInputData() {
     }
 
     parsed.transactions.push(txn);
-    order[txn.address] = i++;
-
-    resolve([parsed, order]);
+    resolve(parsed);
   });
 }
 
