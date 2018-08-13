@@ -207,3 +207,7 @@ input.success, input.fail.success {
 .fail {
   background: #e86c6e;
 }
+
+img {
+  vertical-align: middle;
+}

@@ -32,6 +32,7 @@ window.addEventListener("load", function() {
 
 
   plus.addEventListener("click", () => {
+    const gear = require("../img/2699.png");
     var row = document.createElement("div");
     row.className = "wallet cards row";
     row.innerHTML = `
@@ -49,7 +50,7 @@ window.addEventListener("load", function() {
 
       <div class="col-md-2 middle">
       <span class="middle">
-      ⚙️
+      <img src="${gear}" alt="" width="24" height="24"></a>
       </span>
       </div>
       `;
@@ -63,8 +64,8 @@ window.addEventListener("load", function() {
     var amount = document.getElementById("setall-amount").value;
     var fee = document.getElementById("setall-fee").value;
 
-    var amounts = document.getElementsByClassName("amount");
-    var fees = document.getElementsByClassName("fee");
+    var amounts = document.querySelectorAll(".amount:not(.success)");
+    var fees = document.querySelectorAll(".fee:not(.success)");
 
     for (var i = 0; i < amounts.length; i++) {
       amounts[i].value = amount;
@@ -118,8 +119,7 @@ function sendEth(web3, updateNonce) {
               showError(e, txn.address, r);
             });
         } else {
-          getWalletByAddress(txn.address).innerText = "❌";
-          getWalletByAddress(txn.address).title = `${txn.address} is not a valid Ethereum address!!!!`;
+          showError(`${txn.address} is not a valid Ethereum address!!!!`, txn.address, null);
         }
       }, delay++ * 400);
     });
@@ -127,11 +127,14 @@ function sendEth(web3, updateNonce) {
 }
 
 function showError(e, address, r) {
+  const cross = require("../img/274c.png");
+
   var wallet = getWalletByAddress(address);
   if (!r) {
-    wallet.lastElementChild.lastElementChild.innerText = "❌";
+    wallet.lastElementChild.lastElementChild.innerHTML = `<img src="${cross}" alt="${e}" width="24" height="24">`;
+    wallet.lastElementChild.lastElementChild.title = e;
   } else {
-    wallet.lastElementChild.lastElementChild.innerHTML = `<a rel="noopener" target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}">❌</a>`;
+    wallet.lastElementChild.lastElementChild.innerHTML = `<a rel="noopener" target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}"><img src="${cross}" alt="${e}" width="24" height="24"></a>`;
   }
   for (var i = 0; i <= 2; i++) {
     wallet.children[i].firstElementChild.className += " fail";
@@ -140,9 +143,11 @@ function showError(e, address, r) {
 
 function showReceipt(r, address) {
   if (r.status) {
+    const tick = require("../img/2705.png");
     var wallet = getWalletByAddress(address);
     // TODO: change to mainnet
-    wallet.lastElementChild.lastElementChild.innerHTML = `<a rel="noopener" target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}">✅</a>`;
+    wallet.lastElementChild.lastElementChild.innerHTML = `<a rel="noopener" target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}"><img src="${tick}" alt="success, click to view on Etherscan" width="24" height="24"></a>`;
+    wallet.lastElementChild.lastElementChild.title = "success, click to view on Etherscan";
     for (var i = 0; i <= 2; i++) {
       wallet.children[i].firstElementChild.required = "false";
       wallet.children[i].firstElementChild.disabled = "true";
@@ -150,13 +155,15 @@ function showReceipt(r, address) {
     }
     wallet.className += " success";
   } else {
-    getWalletByAddress(address).lastElementChild.lastElementChild.innerHTML = `<a rel="noopener" target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}">❌</a>`;
+    const cross = require("../img/274c.png");
+    getWalletByAddress(address).lastElementChild.lastElementChild.innerHTML = `<a rel="noopener" target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}"><img width="24" height="24" src="${cross}" alt=""></a>`;
   }
 }
 
 function setWaiting() {
+  const clock = require("../img/1f55f.png");
   document.querySelectorAll(".wallet:not(.success)").forEach(el => {
-    el.lastElementChild.lastElementChild.innerText = "🕟";
+    el.lastElementChild.lastElementChild.innerHTML = `<img src="${clock}" alt="sending..." width="24" height="24">`;
   });
 }
 
