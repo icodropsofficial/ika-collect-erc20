@@ -149,6 +149,7 @@ function showReceipt(r, order) {
       document.getElementsByClassName("wallet")[order].children[i].firstElementChild.disabled = "true";
       document.getElementsByClassName("wallet")[order].children[i].firstElementChild.className += " success";
     }
+    document.getElementsByClassName("wallet")[order].className = "success-wallet cards row";
   } else {
     document.getElementsByClassName("wallet")[order].lastElementChild.lastElementChild.innerHTML = `<a rel="noopener" target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}">❌</a>`;
   }
