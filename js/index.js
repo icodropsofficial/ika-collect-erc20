@@ -1,6 +1,6 @@
 window.addEventListener("load", function() {
   var Web3 = require("web3");
-  var web3 = new Web3("https://rinkeby.infura.io/v3/84e0a3375afd4f57b4753d39188311d7");
+  var web3 = new Web3("http://127.0.0.1:8545");
 
   var plus = document.getElementById("add");
   var setAll = document.getElementById("setall");
@@ -13,7 +13,7 @@ window.addEventListener("load", function() {
     return false;
   };
 
-  keyEl.addEventListener("input", () => {
+  const updateNonce = () => {
     key = keyEl.value;
     if (!key.startsWith("0x")) {
       key = "0x" + key;
@@ -25,7 +25,11 @@ window.addEventListener("load", function() {
     web3.eth.getTransactionCount(web3.eth.accounts.privateKeyToAccount(`${key}`).address).then(count => {
       document.getElementsByName("nonce")[0].value = count;
     });
-  });
+  };
+
+  keyEl.addEventListener("input", updateNonce);
+  document.getElementById("recalculate").addEventListener("click", updateNonce);
+
 
   plus.addEventListener("click", () => {
     var row = document.createElement("div");
@@ -110,6 +114,7 @@ function sendEth(web3) {
             .on('receipt', (r) => {
               console.log(r);
               showReceipt(r, order[txn.address]);
+              updateNonce();
             }).on("error", (e, r) => {
               console.log(e);
               count--;
@@ -127,9 +132,11 @@ function sendEth(web3) {
 function showError(e, order, r) {
   if (!r) {
     document.getElementsByClassName("wallet")[order].lastElementChild.lastElementChild.innerText = "❌";
-    document.getElementsByClassName("wallet")[order].lastElementChild.lastElementChild.title = e;
   } else {
     document.getElementsByClassName("wallet")[order].lastElementChild.lastElementChild.innerHTML = `<a rel="noopener" target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}">❌</a>`;
+  }
+  for (var i = 0; i <= 2; i++) {
+    document.getElementsByClassName("wallet")[order].children[i].firstElementChild.className += " fail";
   }
 }
 
@@ -137,6 +144,11 @@ function showReceipt(r, order) {
   if (r.status) {
     // TODO: change to mainnet
     document.getElementsByClassName("wallet")[order].lastElementChild.lastElementChild.innerHTML = `<a rel="noopener" target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}">✅</a>`;
+    for (var i = 0; i <= 2; i++) {
+      document.getElementsByClassName("wallet")[order].children[i].firstElementChild.required = "false";
+      document.getElementsByClassName("wallet")[order].children[i].firstElementChild.disabled = "true";
+      document.getElementsByClassName("wallet")[order].children[i].firstElementChild.className += " success";
+    }
   } else {
     document.getElementsByClassName("wallet")[order].lastElementChild.lastElementChild.innerHTML = `<a rel="noopener" target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}">❌</a>`;
   }
