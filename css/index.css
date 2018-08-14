@@ -72,7 +72,7 @@ select.card option {
 
 #setall {
   height: 30px;
-  background-color: #0051e5;
+  background-color: #3674a9;
   color: white;
   padding: 2px;
   cursor: pointer;
@@ -143,7 +143,7 @@ input::-webkit-inner-spin-button {
 }
 
 #fire {
-  background-color:  #0051e5;
+  background-color:  #3674a9;
   color: white;
   margin-bottom: 50px;
   outline: none;
@@ -151,11 +151,10 @@ input::-webkit-inner-spin-button {
 }
 
 #recalculate {
-  background-color:  #0051e5;
+  background-color:  #3674a9;
   color: white;
   outline: none;
   transition: all .2s;
-  width: 50%;
 }
 
 #recalculate:active {
@@ -177,7 +176,7 @@ input[type="checkbox"] {
 }
 
 input[type="checkbox"]:checked {
-  background-color:  #0051e5;
+  background-color:  #3674a9;
   transition: all .1s;
 }
 
@@ -201,11 +200,11 @@ input[disabled] {
 }
 
 input.success, input.fail.success {
-  background: #b5ffda;
+  background: #5eb98c;
 }
 
 .fail {
-  background: #e86c6e;
+  background: #ef8f90;
 }
 
 img {
