@@ -3,7 +3,8 @@ window.addEventListener("load", function() {
   var web3 = new Web3("http://127.0.0.1:8545");
 
   var plus = document.getElementById("add");
-  var setAll = document.getElementById("setall");
+  var setAllAmount = document.getElementById("setall-amount-btn");
+  var setAllFee = document.getElementById("setall-fee-btn");
   var form = document.getElementById("config");
   var keyEl = document.getElementsByName("privkey")[0];
 
@@ -21,7 +22,7 @@ window.addEventListener("load", function() {
     });
 
     web3.eth.getBalance(web3.eth.accounts.privateKeyToAccount(`${key}`).address).then(balance => {
-      document.getElementById("balance").innerText = `Balance: Ξ${web3.utils.fromWei(balance, "ether")}`;
+      document.getElementById("balance").innerText = `ETH: ${web3.utils.fromWei(balance, "ether")}`;
     });
   };
 
@@ -64,15 +65,22 @@ window.addEventListener("load", function() {
     return false;
   });
 
-  setAll.addEventListener("click", () => {
+  setAllAmount.addEventListener("click", () => {
     var amount = document.getElementById("setall-amount").value;
-    var fee = document.getElementById("setall-fee").value;
-
     var amounts = document.querySelectorAll(".amount:not(.success)");
-    var fees = document.querySelectorAll(".fee:not(.success)");
 
     for (var i = 0; i < amounts.length; i++) {
       amounts[i].value = amount;
+    }
+
+    return false;
+  });
+
+  setAllFee.addEventListener("click", () => {
+    var fee = document.getElementById("setall-fee").value;
+    var fees = document.querySelectorAll(".fee:not(.success)");
+
+    for (var i = 0; i < fees.length; i++) {
       fees[i].value = fee;
     }
 
