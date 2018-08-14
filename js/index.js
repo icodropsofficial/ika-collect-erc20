@@ -68,7 +68,10 @@ window.addEventListener("load", function() {
 
     var removes = document.getElementsByClassName("remove");
     removes[removes.length-1].addEventListener("click", () => {
-      form.removeChild(row);
+      row.className += " fade-out";
+      window.setTimeout(() => {
+        form.removeChild(row);
+      }, 290);
     });
 
     return false;
@@ -252,7 +255,7 @@ function makeCollapsible() {
         el.parentElement.lastElementChild.className = "fade-out";
         window.setTimeout(() => {
           el.parentElement.lastElementChild.className = "collapsed";
-        }, 200);
+        }, 290);
         el.firstElementChild.innerText = "+";
       }
     });
