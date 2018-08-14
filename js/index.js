@@ -224,7 +224,7 @@ function getWalletByAddress(address) {
  * The div must have no class and must have exactly two children: a link and
  * a div with no class.
  *
- * XXX: firstChild.textContent should be done in some other way.
+ * The link also has to have a span with a + inside.
  */
 function makeCollapsible() {
   var els = document.getElementsByClassName("collapsible");
@@ -234,12 +234,15 @@ function makeCollapsible() {
     el.parentElement.className += "collapsible-container";
 
     el.addEventListener("click", () => {
-      if (el.parentElement.lastElementChild.style.display == "none") {
-        el.parentElement.lastElementChild.style.display = "block";
-        el.firstChild.textContent = "- ";
+      if (el.parentElement.lastElementChild.className == "collapsed") {
+        el.parentElement.lastElementChild.className = "fade-in";
+        el.firstElementChild.innerText = "-";
       } else {
-        el.parentElement.lastElementChild.style.display = "none";
-        el.firstChild.textContent = "+ ";
+        el.parentElement.lastElementChild.className = "fade-out";
+        window.setTimeout(() => {
+          el.parentElement.lastElementChild.className = "collapsed";
+        }, 200);
+        el.firstElementChild.innerText = "+";
       }
     });
   }
