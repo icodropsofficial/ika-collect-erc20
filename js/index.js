@@ -37,7 +37,6 @@ window.addEventListener("load", function() {
 
 
   plus.addEventListener("click", () => {
-    const gear = require("../img/2699.png");
     var row = document.createElement("div");
     row.className = "wallet cards row";
     row.innerHTML = `
@@ -55,7 +54,6 @@ window.addEventListener("load", function() {
 
       <div class="col-md-2 middle">
       <span class="middle">
-      <img src="${gear}" alt="" width="24" height="24"></a>
       </span>
       </div>
       `;
@@ -139,7 +137,7 @@ function sendEth(web3, updateNonce) {
 }
 
 function showError(e, address, r) {
-  const cross = require("../img/274c.png");
+  const cross = require("../img/times-circle-regular.svg");
 
   var wallet = getWalletByAddress(address);
   if (!r) {
@@ -155,7 +153,7 @@ function showError(e, address, r) {
 
 function showReceipt(r, address) {
   if (r.status) {
-    const tick = require("../img/2705.png");
+    const tick = require("../img/external-link-alt-solid.svg");
     var wallet = getWalletByAddress(address);
     // TODO: change to mainnet
     wallet.lastElementChild.lastElementChild.innerHTML = `<a rel="noopener" target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}"><img src="${tick}" alt="success, click to view on Etherscan" width="24" height="24"></a>`;
@@ -167,13 +165,13 @@ function showReceipt(r, address) {
     }
     wallet.className += " success";
   } else {
-    const cross = require("../img/274c.png");
+    const cross = require("../img/times-circle-regular.svg");
     getWalletByAddress(address).lastElementChild.lastElementChild.innerHTML = `<a rel="noopener" target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}"><img width="24" height="24" src="${cross}" alt=""></a>`;
   }
 }
 
 function setWaiting() {
-  const clock = require("../img/1f55f.png");
+  const clock = require("../img/clock-solid.svg");
   document.querySelectorAll(".wallet:not(.success)").forEach(el => {
     el.lastElementChild.lastElementChild.innerHTML = `<img src="${clock}" alt="sending..." width="24" height="24">`;
   });
