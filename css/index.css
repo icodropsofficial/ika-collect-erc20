@@ -192,7 +192,7 @@ a.receipt {
 }
 
 a {
-  color:  #0051e5;
+  color:  #3674a9;
 }
 
 input[disabled] {
@@ -201,10 +201,12 @@ input[disabled] {
 
 input.success, input.fail.success {
   background: #5eb98c;
+  color: white;
 }
 
 .fail {
   background: #ef8f90;
+  color: white;
 }
 
 img {
