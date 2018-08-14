@@ -9,31 +9,40 @@ window.addEventListener("load", function() {
   var keyEl = document.getElementsByName("privkey")[0];
 
   const updateNonce = () => {
-    key = keyEl.value;
-    if (!key.startsWith("0x")) {
-      key = "0x" + key;
-    }
-    if (key.length != 66) {
+    key = getKey(keyEl.value);
+    if (!key) {
       return
     }
 
     web3.eth.getTransactionCount(web3.eth.accounts.privateKeyToAccount(`${key}`).address).then(count => {
       document.getElementsByName("nonce")[0].value = count;
     });
+  };
+
+  const updateBalance = () => {
+    key = getKey(keyEl.value);
+    if (!key) {
+      return
+    }
 
     web3.eth.getBalance(web3.eth.accounts.privateKeyToAccount(`${key}`).address).then(balance => {
       document.getElementById("balance").innerText = `ETH: ${web3.utils.fromWei(balance, "ether")}`;
     });
-  };
+  }
+
+  const updateAll = () => {
+    updateNonce();
+    updateBalance();
+  }
 
   form.onsubmit = () => {
-    sendEth(web3, updateNonce);
+    sendEth(web3, updateBalance);
 
     return false;
   };
 
-  keyEl.addEventListener("input", updateNonce);
-  document.getElementById("recalculate").addEventListener("click", updateNonce);
+  keyEl.addEventListener("input", updateAll);
+  document.getElementById("recalculate").addEventListener("click", updateAll);
 
 
   plus.addEventListener("click", () => {
@@ -102,7 +111,7 @@ window.addEventListener("load", function() {
   makeCollapsible();
 });
 
-function sendEth(web3, updateNonce) {
+function sendEth(web3, updateBalance) {
   getInputData().then(data => {
     var confirmations = {};
     if (data.privkey.startsWith("0x")) {
@@ -138,12 +147,18 @@ function sendEth(web3, updateNonce) {
             .on('receipt', (r) => {
               console.log(r);
               showReceipt(r, txn.address);
-              updateNonce();
+              updateBalance();
             }).on("error", (e, r) => {
               console.log(e);
               count--;
               showError(e, txn.address, r);
             });
+
+          if (i == a.length - 1) {
+            window.setTimeout(() => {
+              document.getElementsByName("nonce")[0].value = count;
+            }, 100);
+          }
         } else {
           showError(`${txn.address} is not a valid Ethereum address!!!!`, txn.address, null);
         }
@@ -162,8 +177,15 @@ function showError(e, address, r) {
   } else {
     wallet.lastElementChild.lastElementChild.innerHTML = `<a rel="noopener" target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}"><img src="${cross}" alt="${e}" width="24" height="24"></a>`;
   }
-  for (var i = 0; i <= 2; i++) {
-    wallet.children[i].firstElementChild.className += " fail";
+
+  if (wallet.children.length == 4) {
+    for (var i = 0; i <= 2; i++) {
+      wallet.children[i].firstElementChild.className += " fail";
+    }
+  } else {
+    for (var i = 1; i <= 3; i++) {
+      wallet.children[i].firstElementChild.className += " fail";
+    }
   }
 }
 
@@ -174,10 +196,18 @@ function showReceipt(r, address) {
     // TODO: change to mainnet
     wallet.lastElementChild.lastElementChild.innerHTML = `<a rel="noopener" target="_blank" class="receipt" href="https://rinkeby.etherscan.io/tx/${r.transactionHash}"><img src="${tick}" alt="success, click to view on Etherscan" width="24" height="24"></a>`;
     wallet.lastElementChild.lastElementChild.title = "success, click to view on Etherscan";
-    for (var i = 0; i <= 2; i++) {
-      wallet.children[i].firstElementChild.required = "false";
-      wallet.children[i].firstElementChild.disabled = "true";
-      wallet.children[i].firstElementChild.className += " success";
+    if (wallet.children.length == 4) {
+      for (var i = 0; i <= 2; i++) {
+        wallet.children[i].firstElementChild.required = "false";
+        wallet.children[i].firstElementChild.disabled = "true";
+        wallet.children[i].firstElementChild.className += " success";
+      }
+    } else {
+      for (var i = 1; i <= 3; i++) {
+        wallet.children[i].firstElementChild.required = "false";
+        wallet.children[i].firstElementChild.disabled = "true";
+        wallet.children[i].firstElementChild.className += " success";
+      }
     }
     wallet.className += " success";
   } else {
@@ -260,4 +290,15 @@ function makeCollapsible() {
       }
     });
   }
+}
+
+function getKey(key) {
+  if (!key.startsWith("0x")) {
+    key = "0x" + key;
+  }
+  if (key.length != 66) {
+    return false;
+  }
+
+  return key;
 }
