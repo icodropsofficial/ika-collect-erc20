@@ -19,6 +19,10 @@ window.addEventListener("load", function() {
     web3.eth.getTransactionCount(web3.eth.accounts.privateKeyToAccount(`${key}`).address).then(count => {
       document.getElementsByName("nonce")[0].value = count;
     });
+
+    web3.eth.getBalance(web3.eth.accounts.privateKeyToAccount(`${key}`).address).then(balance => {
+      document.getElementById("balance").innerText = `Balance: Ξ${web3.utils.fromWei(balance, "ether")}`;
+    });
   };
 
   form.onsubmit = () => {
