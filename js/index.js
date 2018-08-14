@@ -40,7 +40,11 @@ window.addEventListener("load", function() {
     var row = document.createElement("div");
     row.className = "wallet cards row";
     row.innerHTML = `
-      <div class="col-md-6">
+      <div class="col-md-1">
+      <button class="card remove" type="button">-</button>
+      </div>
+
+      <div class="col-md-5">
       <input type="text" class="card address" placeholder="ETH address (0x012345...)" name="address" required />
       </div>
 
@@ -58,7 +62,14 @@ window.addEventListener("load", function() {
       </div>
       `;
 
-    document.getElementById("config").insertBefore(row, plus.parentElement.parentElement);
+    var form = document.getElementById("config");
+
+    form.insertBefore(row, plus.parentElement.parentElement);
+
+    var removes = document.getElementsByClassName("remove");
+    removes[removes.length-1].addEventListener("click", () => {
+      form.removeChild(row);
+    });
 
     return false;
   });

@@ -70,6 +70,14 @@ select.card option {
   outline: none;
 }
 
+.card.remove {
+  font-size: 76px;
+  line-height: 32px;
+  color: #c8c8c8;
+  cursor: pointer;
+  outline: none;
+}
+
 .setall-btn {
   height: 30px;
   background-color: #3674a9;
