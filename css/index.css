@@ -212,3 +212,12 @@ input.success, input.fail.success {
 img {
   vertical-align: middle;
 }
+
+.collapsible {
+  cursor: pointer;
+  color: black;
+}
+
+.collapsible-container {
+
+}

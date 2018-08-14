@@ -84,6 +84,8 @@ window.addEventListener("load", function() {
 
     return false;
   });
+
+  makeCollapsible();
 });
 
 function sendEth(web3, updateNonce) {
@@ -215,4 +217,30 @@ function getWalletByAddress(address) {
     }
   }
   return document.createElement("input");
+}
+
+/**
+ * Makes a div with a link with class "collapsible" collapsible.
+ * The div must have no class and must have exactly two children: a link and
+ * a div with no class.
+ *
+ * XXX: firstChild.textContent should be done in some other way.
+ */
+function makeCollapsible() {
+  var els = document.getElementsByClassName("collapsible");
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+
+    el.parentElement.className += "collapsible-container";
+
+    el.addEventListener("click", () => {
+      if (el.parentElement.lastElementChild.style.display == "none") {
+        el.parentElement.lastElementChild.style.display = "block";
+        el.firstChild.textContent = "- ";
+      } else {
+        el.parentElement.lastElementChild.style.display = "none";
+        el.firstChild.textContent = "+ ";
+      }
+    });
+  }
 }
