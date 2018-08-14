@@ -36,6 +36,36 @@
           </div>
 
           <form id="config">
+
+            <div class="cards row">
+              <div class="col-md-2 d-none d-md-block"></div>
+              <div class="col-md-8 align-self-center col">
+                <input type="password" class="card narrow" placeholder="private key" name="privkey" required />
+              </div>
+              <div class="col-md-2 d-none d-md-block"></div>
+            </div>
+
+            <div class="cards row">
+              <div class="col-md-2 d-none d-md-block"></div>
+              <div class="col-md-4 align-self-center col-6">
+                <input type="number" class="card narrow" placeholder="nonce" name="nonce" required />
+              </div>
+              <div class="col-md-4 col-6">
+                <button class="card narrow" id="recalculate" type="button">recalculate</button>
+              </div>
+              <div class="col-md-2 d-none d-md-block"></div>
+            </div>
+
+            <div class="cards row">
+              <div class="col-md-2 d-none d-md-block"></div>
+              <div class="col-md-8 align-self-center col">
+                <span id="balance">Balance: unknown</span>
+              </div>
+              <div class="col-md-2 d-none d-md-block"></div>
+            </div>
+
+            <div class="separator"></div>
+
             <div class="wallet cards row">
 
               <div class="col-md-6">
@@ -101,29 +131,6 @@
 
             <div class="separator"></div>
 
-            <div class="cards row">
-              <div class="col-md-2 d-none d-md-block"></div>
-              <div class="col-md-8 align-self-center col">
-                <input type="number" class="card narrow" placeholder="nonce" name="nonce" required />
-              </div>
-              <div class="col-md-2 d-none d-md-block"></div>
-            </div>
-
-            <div class="cards row">
-              <div class="col-md-2 d-none d-md-block"></div>
-              <div class="col-md-8 align-self-center col">
-                <input type="password" class="card narrow" placeholder="private key" name="privkey" required />
-              </div>
-              <div class="col-md-2 d-none d-md-block"></div>
-            </div>
-
-            <div class="cards row">
-              <div class="col-md-2 d-none d-md-block">
-              </div>
-              <div class="col-md-4 align-self-center col">
-                <button class="card semi-narrow" id="recalculate" type="button">recalculate</button></div>
-              <div class="col-md-6 d-none d-md-block"></div>
-            </div>
 
             <div class="cards row">
               <div class="col-md-2 d-none d-md-block"></div>
