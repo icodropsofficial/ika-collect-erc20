@@ -38,30 +38,22 @@
           <form id="config">
 
             <div class="cards row">
-              <div class="col-md-2 d-none d-md-block"></div>
-              <div class="col-md-8 align-self-center col">
+              <div class="col-md-6 align-self-center col">
                 <input type="password" class="card narrow" placeholder="private key" name="privkey" required />
               </div>
-              <div class="col-md-2 d-none d-md-block"></div>
-            </div>
 
-            <div class="cards row">
-              <div class="col-md-2 d-none d-md-block"></div>
               <div class="col-md-4 align-self-center col-6">
                 <input type="number" class="card narrow" placeholder="nonce" name="nonce" required />
               </div>
-              <div class="col-md-4 col-6">
-                <button class="card narrow" id="recalculate" type="button">recalculate</button>
-              </div>
-              <div class="col-md-2 d-none d-md-block"></div>
             </div>
 
             <div class="cards row">
-              <div class="col-md-2 d-none d-md-block"></div>
-              <div class="col-md-8 align-self-center col">
-                <span id="balance">Balance: unknown</span>
+              <div class="col-md-6 align-self-center col-6">
+                <span id="balance">ETH: unknown</span>
               </div>
-              <div class="col-md-2 d-none d-md-block"></div>
+              <div class="col-md-4 col">
+                <button class="card narrow" id="recalculate" type="button">recalculate</button>
+              </div>
             </div>
 
             <div class="separator"></div>
@@ -82,7 +74,6 @@
 
               <div class="col-md-2 middle">
                 <span class="middle">
-                  <img src="img/gear.png" alt="" width="24" height="24"></a>
                 </span>
               </div>
 
@@ -118,10 +109,11 @@
               </div>
 
               <div class="col-md-2 col">
-                <button class="card" id="setall" type="button">set all</button>
+                <button class="card setall-btn" id="setall-amount-btn" type="button">set all</button>
               </div>
 
-              <div class="col-md-2">
+              <div class="col-md-2 col">
+                <button class="card setall-btn" id="setall-fee-btn" type="button">set all</button>
               </div>
 
               <div class="col-md-2">
@@ -133,16 +125,14 @@
 
 
             <div class="cards row">
-              <div class="col-md-2 d-none d-md-block"></div>
-              <div class="col-md-8 align-self-center col">
+              <div class="col-md-10 align-self-center col">
                 <label><input type="checkbox" class="semi-narrow" name="agree" required /> I acknowledge my responsibility for any possible value loss</label>
               </div>
               <div class="col-md-2 d-none d-md-block"></div>
             </div>
 
             <div class="cards row">
-              <div class="col-md-2 d-none d-md-block"></div>
-              <div class="col-md-8 align-self-center col">
+              <div class="col-md-10 align-self-center col">
                 <button class="card semi-narrow" id="fire">fire!</button>
               </div>
               <div class="col-md-2 d-none d-md-block"></div>

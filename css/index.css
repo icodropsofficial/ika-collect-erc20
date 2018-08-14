@@ -70,7 +70,7 @@ select.card option {
   outline: none;
 }
 
-#setall {
+.setall-btn {
   height: 30px;
   background-color: #3674a9;
   color: white;
@@ -80,7 +80,7 @@ select.card option {
   transition: all .2s;
 }
 
-#setall:active {
+.setall-btn:active {
   transition: all .2s;
   transform: scale(0.9);
 }
