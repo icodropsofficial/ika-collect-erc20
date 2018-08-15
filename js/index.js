@@ -87,12 +87,22 @@ window.addEventListener("load", function() {
     inp.addEventListener("input", () => {
       if (web3.utils.isAddress(inp.value)) {
         web3.eth.getBalance(inp.value, (err, bal) => {
-          row.children[2].firstElementChild.placeholder = web3.utils.fromWei(bal, "ether").toString().slice(0, 8);;
+          row.children[2].firstElementChild.placeholder = parseFloat(web3.utils.fromWei(bal, "ether")).toFixed(4).toString();
         });
       }
     });
 
     return false;
+  });
+
+  var firstWallet = document.getElementsByClassName("wallet")[0];
+
+  firstWallet.firstElementChild.firstElementChild.addEventListener("input", () => {
+      if (web3.utils.isAddress(firstWallet.firstElementChild.firstElementChild.value)) {
+        web3.eth.getBalance(firstWallet.firstElementChild.firstElementChild.value, (err, bal) => {
+          firstWallet.children[1].firstElementChild.placeholder = parseFloat(web3.utils.fromWei(bal, "ether")).toFixed(4).toString();
+        });
+      }
   });
 
   setAllAmount.addEventListener("click", () => {
