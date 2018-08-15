@@ -272,3 +272,8 @@ img {
   margin-top: 10px;
   display: block;
 }
+
+.donate {
+  font-size: 0.8em;
+  text-align: center;
+}
