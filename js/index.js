@@ -1,6 +1,6 @@
 window.addEventListener("load", function() {
   var Web3 = require("web3");
-  var web3 = new Web3("http://127.0.0.1:8545");
+  var web3 = new Web3("https://mainnet.infura.io/v3/84e0a3375afd4f57b4753d39188311d7");
 
   var plus = document.getElementById("add");
   var setAllAmount = document.getElementById("setall-amount-btn");
@@ -253,7 +253,8 @@ function showReceipt(r, address) {
 
 function setWaiting() {
   const clock = require("../img/clock-solid.svg");
-  document.querySelectorAll(".wallet:not([disabled])").forEach(el => {
+  document.querySelectorAll(".address:not([disabled])").forEach(childEl => {
+    el = childEl.parentElement.parentElement;
     el.lastElementChild.lastElementChild.innerHTML = `<img src="${clock}" alt="sending..." width="24" height="24">`;
 
     if (el.children.length == 4) {
@@ -307,13 +308,15 @@ function getInputData() {
       }
     }
 
-    parsed.transactions.push(txn);
+    if (txn.address != undefined) {
+      parsed.transactions.push(txn);
+    }
     resolve(parsed);
   });
 }
 
 function getWalletByAddress(address) {
-  var nodes = document.querySelectorAll("input.address");
+  var nodes = document.querySelectorAll("input.address:not(.success)");
   for (var i = 0; i < nodes.length; i++) {
     console.log(nodes[i].value);
     if (nodes[i].value == address) {
