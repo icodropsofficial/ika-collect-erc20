@@ -64,7 +64,7 @@ window.addEventListener("load", function() {
       </div>
 
       <div class="col-md-2">
-      <input type="number" class="card amount" placeholder="amount (eth)" name="amount" step="0.00000001" min="0" required />
+      <input type="number" class="card amount" placeholder="eth" name="amount" step="0.00000001" min="0" required />
       </div>
 
       <div class="col-md-2">
