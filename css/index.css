@@ -261,3 +261,8 @@ img {
 .github-icon {
   width: 24px;
 }
+
+#gasprice {
+  margin-top: 10px;
+  display: block;
+}

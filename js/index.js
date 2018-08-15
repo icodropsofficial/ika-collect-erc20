@@ -35,6 +35,12 @@ window.addEventListener("load", function() {
     updateBalance();
   }
 
+  const updateGas = () => {
+    web3.eth.getGasPrice().then(price => {
+      document.getElementById("gasprice").innerText = `suggested gas price is ${parseFloat(web3.utils.fromWei(price, "gwei")).toFixed(2)} gwei`;
+    });
+  };
+
   form.onsubmit = () => {
     sendEth(web3, updateBalance);
 
@@ -128,6 +134,9 @@ window.addEventListener("load", function() {
   });
 
   makeCollapsible();
+
+  updateGas();
+  window.setInterval(updateGas, 5000);
 });
 
 function sendEth(web3, updateBalance) {
