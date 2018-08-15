@@ -1,6 +1,6 @@
 window.addEventListener("load", function() {
   var Web3 = require("web3");
-  var web3 = new Web3("https://rinkeby.infura.io/v3/84e0a3375afd4f57b4753d39188311d7");
+  var web3 = new Web3("http://127.0.0.1:8545");
 
   var plus = document.getElementById("add");
   var setAllAmount = document.getElementById("setall-amount-btn");
@@ -141,6 +141,9 @@ window.addEventListener("load", function() {
 
 function sendEth(web3, updateBalance) {
   getInputData().then(data => {
+    if (data == undefined || data.transactions.length == 0) {
+      return;
+    }
     var confirmations = {};
     if (data.privkey.startsWith("0x")) {
       data.privkey = data.privkey.slice(2);
@@ -272,6 +275,7 @@ function getInputData() {
     var data = new FormData(document.getElementById("config"));
     var parsed = {transactions: []};
     var txn = {};
+    var addrs = {};
 
     var i = 0;
     for (var pair of data) {
@@ -288,6 +292,18 @@ function getInputData() {
         txn[pair[0]] = pair[1];
       } else {
         parsed[pair[0]] = pair[1];
+      }
+
+      if (pair[0] == "address") {
+        addrs[pair[1]] == undefined ? addrs[pair[1]] = 1 : addrs[pair[1]] += 1;
+      }
+    }
+
+    for (var addr in addrs) {
+      console.log(addr, addrs[addr]);
+      if (addrs[addr] && addrs[addr] > 1) {
+        alert(`found a duplicate entry: ${addr}, please remove one first`);
+        resolve(undefined);
       }
     }
 
