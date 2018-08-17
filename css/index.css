@@ -123,8 +123,11 @@ input::-webkit-inner-spin-button {
 @media (max-width: 768px) {
   .cards div {
   }
-  .setall div:first-child {
+  .setall:first-child {
     display: none;
+  }
+  #setall-amount-btn {
+    margin-bottom: 20px;
   }
 }
 
@@ -276,4 +279,13 @@ img {
 .donate {
   font-size: 0.8em;
   text-align: center;
+}
+
+#setall-fee, #setall-amount {
+  margin-bottom: 10px;
+}
+
+.col.no-gutters {
+  padding-right: 0;
+  padding-left: 0;
 }

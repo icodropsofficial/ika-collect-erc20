@@ -37,7 +37,7 @@ window.addEventListener("load", function() {
 
   const updateGas = () => {
     web3.eth.getGasPrice().then(price => {
-      document.getElementById("gasprice").innerText = `suggested gas price is ${parseFloat(web3.utils.fromWei(price, "gwei")).toFixed(2)} gwei`;
+      document.getElementById("gasprice").innerText = `suggested gas price: ${parseFloat(web3.utils.fromWei(price, "gwei")).toFixed(2)} gwei`;
     });
   };
 
