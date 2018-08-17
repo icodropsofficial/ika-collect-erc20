@@ -1,4 +1,8 @@
-window.addEventListener("load", function() {
+'use strict';
+
+window.addEventListener("load", main);
+
+function main() {
   var Web3 = require("web3");
   var web3 = new Web3("https://mainnet.infura.io/v3/84e0a3375afd4f57b4753d39188311d7");
 
@@ -7,6 +11,7 @@ window.addEventListener("load", function() {
   var setAllFee = document.getElementById("setall-fee-btn");
   var form = document.getElementById("config");
   var keyEl = document.getElementsByName("privkey")[0];
+  var contractEl = document.getElementsByName("contract")[0];
 
   const updateNonce = () => {
     key = getKey(keyEl.value);
@@ -133,11 +138,22 @@ window.addEventListener("load", function() {
     return false;
   });
 
+  import("./tokens.js").then(tokens => {
+  contractEl.addEventListener("input", () => {
+    addr = contractEl.value.trim();
+    if (web3.utils.isAddress(addr)) {
+      tokens.updateTokenData(addr, web3);
+    } else {
+      document.getElementById("token").innerText = "invalid token contract address";
+    }
+  });
+  });
+
   makeCollapsible();
 
   updateGas();
   window.setInterval(updateGas, 5000);
-});
+}
 
 function sendEth(web3, updateBalance) {
   getInputData().then(data => {
