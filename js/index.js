@@ -4,7 +4,7 @@ window.addEventListener("load", main);
 
 function main() {
   var Web3 = require("web3");
-  var web3 = new Web3("http://127.0.0.1:8545");
+  var web3 = new Web3("https://rinkeby.infura.io/v3/84e0a3375afd4f57b4753d39188311d7");
 
   var plus = document.getElementById("add");
   var setAllAmount = document.getElementById("setall-amount-btn");
@@ -14,32 +14,55 @@ function main() {
   var contractEl = document.getElementsByName("contract")[0];
 
   var key = "";
-  var contract = "";
+  var contract = {};
+  var token = {};
+  var address = "";
 
   const updateKey = () => {
     key = getKey(keyEl.value);
     return !key ? false : true;
   }
 
+  const updateAddress = () => {
+    address = web3.eth.accounts.privateKeyToAccount(`${key}`).address;
+  }
+
   const updateNonce = () => {
-    web3.eth.getTransactionCount(web3.eth.accounts.privateKeyToAccount(`${key}`).address).then(count => {
+    web3.eth.getTransactionCount(address).then(count => {
       document.getElementsByName("nonce")[0].value = count;
     });
   };
 
   const updateBalance = () => {
-    web3.eth.getBalance(web3.eth.accounts.privateKeyToAccount(`${key}`).address).then(balance => {
-      document.getElementById("balance").innerText = `ETH: ${web3.utils.fromWei(balance, "ether")}`;
+    web3.eth.getBalance(address).then(balance => {
+      return new Promise(resolve => {
+        document.getElementById("balance").innerText = `ETH: ${web3.utils.fromWei(balance, "ether")}`;
+        resolve();
+      });
+    }).then(() => {
+      if (Object.keys(contract).length === 0) {
+        return;
+      }
+
+      var bal = 0;
+      contract.methods.balanceOf(address).call().then(tokenBalance => {
+        bal = tokenBalance;
+        return contract.methods.decimals().call();
+      }).then(decimals => {
+        document.getElementById("balance").innerText += `, tokens: ${bal / 10 ** decimals}`;
+      });
     });
   };
 
   const updateKeyBalance = () => {
     if (!updateKey()) return;
+    updateAddress();
     updateBalance();
   };
 
   const updateAll = () => {
     if (!updateKey()) return;
+    updateAddress();
     updateNonce();
     updateBalance();
   }
@@ -143,14 +166,17 @@ function main() {
   });
 
   import("./tokens.js").then(tokens => {
-  contractEl.addEventListener("input", () => {
-    addr = contractEl.value.trim();
-    if (web3.utils.isAddress(addr)) {
-      tokens.updateTokenData(addr, web3);
-    } else {
-      document.getElementById("token").innerText = "invalid token contract address";
-    }
-  });
+    contractEl.addEventListener("input", () => {
+      addr = contractEl.value.trim();
+      if (web3.utils.isAddress(addr)) {
+        tokens.updateTokenData(addr, web3).then(val => {
+          contract = val;
+          updateKeyBalance();
+        });
+      } else {
+        document.getElementById("token").innerText = "invalid token contract address";
+      }
+    });
   });
 
   makeCollapsible();

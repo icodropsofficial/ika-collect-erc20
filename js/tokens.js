@@ -70,17 +70,21 @@ function clearTokenText(s) {
 }
 
 export function updateTokenData(addr, web3) {
-  var contract = new web3.eth.Contract(abi, addr);
-  clearTokenText();
+  return new Promise(resolve => {
+    var contract = new web3.eth.Contract(abi, addr);
+    clearTokenText();
 
-  contract.methods.symbol().call().then(sym => {
-    appendTokenText(`${sym}:`);
-    return contract.methods.name().call();
-  }).then(name => {
-    appendTokenText(` ${name}`);
-    return contract.methods.decimals().call();
-  }).then(decimals => {
-    appendTokenText(`, decimals: ${decimals}`);
+    contract.methods.symbol().call().then(sym => {
+      appendTokenText(`${sym}:`);
+      return contract.methods.name().call();
+    }).then(name => {
+      appendTokenText(` ${name}`);
+      return contract.methods.decimals().call();
+    }).then(decimals => {
+      appendTokenText(`, decimals: ${decimals}`);
+    }).then(() => {
+      resolve(contract);
+    });
   });
 }
 
