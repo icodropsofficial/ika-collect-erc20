@@ -10,6 +10,8 @@ function main() {
   var setAllAmountEl = document.getElementById("setall-amount-btn");
   var setAllFeeEl = document.getElementById("setall-fee-btn");
   var formEl = document.getElementById("config");
+  var firstWalletEl = document.getElementsByClassName("wallet")[0];
+
   var keyEl = document.getElementsByName("privkey")[0];
   var contractEl = document.getElementsByName("contract")[0];
   var tokenEl = document.getElementById("token");
@@ -120,9 +122,9 @@ function main() {
 
     var inp = row.children[1].firstElementChild;
     inp.addEventListener("input", () => {
-      if (web3.utils.isAddress(inp.value)) {
-        web3.eth.getBalance(inp.value, (err, bal) => {
-          row.children[2].firstElementChild.placeholder = parseFloat(web3.utils.fromWei(bal, "ether")).toFixed(4).toString();
+      if (Object.keys(contract).length !== 0 && web3.utils.isAddress(inp.value)) {
+        contract.methods.balanceOf(inp.value).call().then(bal => {
+          row.children[2].firstElementChild.placeholder = bal / 10 ** token.decimals;
         });
       }
     });
@@ -130,12 +132,11 @@ function main() {
     return false;
   });
 
-  var firstWallet = document.getElementsByClassName("wallet")[0];
 
-  firstWallet.firstElementChild.firstElementChild.addEventListener("input", () => {
-      if (web3.utils.isAddress(firstWallet.firstElementChild.firstElementChild.value)) {
-        web3.eth.getBalance(firstWallet.firstElementChild.firstElementChild.value, (err, bal) => {
-          firstWallet.children[1].firstElementChild.placeholder = parseFloat(web3.utils.fromWei(bal, "ether")).toFixed(4).toString();
+  firstWalletEl.firstElementChild.firstElementChild.addEventListener("input", () => {
+      if (Object.keys(contract).length !== 0 && web3.utils.isAddress(firstWalletEl.firstElementChild.firstElementChild.value)) {
+        contract.methods.balanceOf(firstWalletEl.firstElementChild.firstElementChild.value).call().then(bal => {
+          firstWalletEl.children[1].firstElementChild.placeholder = bal / 10 ** token.decimals;
         });
       }
   });
