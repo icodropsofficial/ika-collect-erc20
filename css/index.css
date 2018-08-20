@@ -148,6 +148,9 @@ input::-webkit-inner-spin-button {
 .narrow {
   padding-top: 2px;
   padding-bottom: 0px;
+}
+
+button.narrow {
   max-height: 29px;
 }
 
