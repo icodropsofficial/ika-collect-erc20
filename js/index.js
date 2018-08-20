@@ -6,10 +6,10 @@ function main() {
   var Web3 = require("web3");
   var web3 = new Web3("https://rinkeby.infura.io/v3/84e0a3375afd4f57b4753d39188311d7");
 
-  var plus = document.getElementById("add");
-  var setAllAmount = document.getElementById("setall-amount-btn");
-  var setAllFee = document.getElementById("setall-fee-btn");
-  var form = document.getElementById("config");
+  var plusEl = document.getElementById("add");
+  var setAllAmountEl = document.getElementById("setall-amount-btn");
+  var setAllFeeEl = document.getElementById("setall-fee-btn");
+  var formEl = document.getElementById("config");
   var keyEl = document.getElementsByName("privkey")[0];
   var contractEl = document.getElementsByName("contract")[0];
   var tokenEl = document.getElementById("token");
@@ -72,7 +72,7 @@ function main() {
     });
   };
 
-  form.onsubmit = () => {
+  formEl.onsubmit = () => {
     sendEth(web3, updateKeyBalance);
 
     return false;
@@ -82,7 +82,7 @@ function main() {
   document.getElementById("recalculate").addEventListener("click", updateAll);
 
 
-  plus.addEventListener("click", () => {
+  plusEl.addEventListener("click", () => {
     var row = document.createElement("div");
     row.className = "wallet cards row";
     row.innerHTML = `
@@ -108,15 +108,13 @@ function main() {
       </div>
       `;
 
-    var form = document.getElementById("config");
-
-    form.insertBefore(row, plus.parentElement.parentElement);
+    formEl.insertBefore(row, plusEl.parentElement.parentElement);
 
     var removes = document.getElementsByClassName("remove");
     removes[removes.length-1].addEventListener("click", () => {
       row.className += " fade-out";
       window.setTimeout(() => {
-        form.removeChild(row);
+        formEl.removeChild(row);
       }, 290);
     });
 
@@ -142,7 +140,7 @@ function main() {
       }
   });
 
-  setAllAmount.addEventListener("click", () => {
+  setAllAmountEl.addEventListener("click", () => {
     var amount = document.getElementById("setall-amount").value;
     var amounts = document.querySelectorAll(".amount:not(.success)");
 
@@ -153,7 +151,7 @@ function main() {
     return false;
   });
 
-  setAllFee.addEventListener("click", () => {
+  setAllFeeEl.addEventListener("click", () => {
     var fee = document.getElementById("setall-fee").value;
     var fees = document.querySelectorAll(".fee:not(.success)");
 
