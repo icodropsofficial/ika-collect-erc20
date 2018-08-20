@@ -4,7 +4,7 @@ window.addEventListener("load", main);
 
 function main() {
   var Web3 = require("web3");
-  var web3 = new Web3("https://mainnet.infura.io/v3/84e0a3375afd4f57b4753d39188311d7");
+  var web3 = new Web3("http://127.0.0.1:8545");
 
   var plus = document.getElementById("add");
   var setAllAmount = document.getElementById("setall-amount-btn");
@@ -13,29 +13,33 @@ function main() {
   var keyEl = document.getElementsByName("privkey")[0];
   var contractEl = document.getElementsByName("contract")[0];
 
-  const updateNonce = () => {
-    key = getKey(keyEl.value);
-    if (!key) {
-      return
-    }
+  var key = "";
+  var contract = "";
 
+  const updateKey = () => {
+    key = getKey(keyEl.value);
+    return !key ? false : true;
+  }
+
+  const updateNonce = () => {
     web3.eth.getTransactionCount(web3.eth.accounts.privateKeyToAccount(`${key}`).address).then(count => {
       document.getElementsByName("nonce")[0].value = count;
     });
   };
 
   const updateBalance = () => {
-    key = getKey(keyEl.value);
-    if (!key) {
-      return
-    }
-
     web3.eth.getBalance(web3.eth.accounts.privateKeyToAccount(`${key}`).address).then(balance => {
       document.getElementById("balance").innerText = `ETH: ${web3.utils.fromWei(balance, "ether")}`;
     });
-  }
+  };
+
+  const updateKeyBalance = () => {
+    if (!updateKey()) return;
+    updateBalance();
+  };
 
   const updateAll = () => {
+    if (!updateKey()) return;
     updateNonce();
     updateBalance();
   }
@@ -47,7 +51,7 @@ function main() {
   };
 
   form.onsubmit = () => {
-    sendEth(web3, updateBalance);
+    sendEth(web3, updateKeyBalance);
 
     return false;
   };
@@ -317,7 +321,6 @@ function getInputData() {
     }
 
     for (var addr in addrs) {
-      console.log(addr, addrs[addr]);
       if (addrs[addr] && addrs[addr] > 1) {
         alert(`found a duplicate entry: ${addr}, please remove one first`);
         resolve(undefined);
@@ -334,7 +337,6 @@ function getInputData() {
 function getWalletByAddress(address) {
   var nodes = document.querySelectorAll("input.address:not(.success)");
   for (var i = 0; i < nodes.length; i++) {
-    console.log(nodes[i].value);
     if (nodes[i].value == address) {
       return nodes[i].parentElement.parentElement;
     }
