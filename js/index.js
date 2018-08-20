@@ -12,11 +12,12 @@ function main() {
   var form = document.getElementById("config");
   var keyEl = document.getElementsByName("privkey")[0];
   var contractEl = document.getElementsByName("contract")[0];
+  var tokenEl = document.getElementById("token");
 
   var key = "";
+  var address = "";
   var contract = {};
   var token = {};
-  var address = "";
 
   const updateKey = () => {
     key = getKey(keyEl.value);
@@ -40,16 +41,14 @@ function main() {
         resolve();
       });
     }).then(() => {
-      if (Object.keys(contract).length === 0) {
+      if (Object.keys(token).length === 0) {
         return;
       }
 
       var bal = 0;
       contract.methods.balanceOf(address).call().then(tokenBalance => {
         bal = tokenBalance;
-        return contract.methods.decimals().call();
-      }).then(decimals => {
-        document.getElementById("balance").innerText += `, tokens: ${bal / 10 ** decimals}`;
+        document.getElementById("balance").innerText += `, tokens: ${bal / 10 ** token.decimals}`;
       });
     });
   };
@@ -170,7 +169,9 @@ function main() {
       addr = contractEl.value.trim();
       if (web3.utils.isAddress(addr)) {
         tokens.updateTokenData(addr, web3).then(val => {
-          contract = val;
+          contract = val[0];
+          token = val[1];
+          updateTokenInfo(token, tokenEl);
           updateKeyBalance();
         });
       } else {
@@ -408,4 +409,8 @@ function getKey(key) {
   }
 
   return key;
+}
+
+function updateTokenInfo(token, tokenEl) {
+  tokenEl.innerText = `${token.symbol}: ${token.name}, ${token.decimals} decimals`;
 }

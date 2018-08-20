@@ -60,30 +60,21 @@ const abi = [
   }
 ];
 
-
-function appendTokenText(s) {
-  document.getElementById("token").innerText += s;
-}
-
-function clearTokenText(s) {
-  document.getElementById("token").innerText = "";
-}
-
 export function updateTokenData(addr, web3) {
   return new Promise(resolve => {
     var contract = new web3.eth.Contract(abi, addr);
-    clearTokenText();
+    var tokenInfo = {};
 
     contract.methods.symbol().call().then(sym => {
-      appendTokenText(`${sym}:`);
+      tokenInfo["symbol"] = sym;
       return contract.methods.name().call();
     }).then(name => {
-      appendTokenText(` ${name}`);
+      tokenInfo["name"] = name;
       return contract.methods.decimals().call();
     }).then(decimals => {
-      appendTokenText(`, decimals: ${decimals}`);
+      tokenInfo["decimals"] = decimals;
     }).then(() => {
-      resolve(contract);
+      resolve([contract, tokenInfo]);
     });
   });
 }
