@@ -50,7 +50,7 @@ function main() {
       var bal = 0;
       contract.methods.balanceOf(address).call().then(tokenBalance => {
         bal = tokenBalance;
-        document.getElementById("balance").innerText += `, tokens: ${bal / 10 ** token.decimals}`;
+        document.getElementById("balance").innerHTML += `<br>${token.symbol}: ${bal / 10 ** token.decimals}`;
       });
     });
   };
@@ -97,7 +97,7 @@ function main() {
       </div>
 
       <div class="col-md-2">
-      <input type="number" class="card amount" placeholder="eth" name="amount" step="0.00000001" min="0" required />
+      <input type="number" class="card amount" placeholder="tokens" name="amount" step="0.00000001" min="0" required />
       </div>
 
       <div class="col-md-2">
