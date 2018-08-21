@@ -75,7 +75,7 @@ function main() {
   };
 
   formEl.onsubmit = () => {
-    sendEth(web3, updateKeyBalance);
+    sendEth(web3, updateKeyBalance, contract, token);
 
     return false;
   };
@@ -185,7 +185,7 @@ function main() {
   window.setInterval(updateGas, 5000);
 }
 
-function sendEth(web3, updateBalance) {
+function sendEth(web3, updateBalance, contract, token) {
   getInputData().then(data => {
     if (data == undefined || data.transactions.length == 0) {
       return;
@@ -208,34 +208,44 @@ function sendEth(web3, updateBalance) {
       // XXX: to reduce nonce on fail
       window.setTimeout(() => {
         if (web3.utils.isAddress(txn.address)) {
+          var call = contract.methods.transfer(txn.address, txn.amount * 10 ** token.decimals);
+
           var tx = new Tx();
           tx.gasPrice = new BN(web3.utils.toWei(txn.fee, "shannon"));
-          tx.gasLimit = 21000;
-          tx.value = new BN(web3.utils.toWei(txn.amount, "ether"));
-          tx.to = txn.address;
+          tx.value = 0;
+          tx.to = contract._address;
           tx.nonce = count++;
-          tx.sign(privateKey);
+          tx.data = call.encodeABI();
 
+          tx.gasLimit = new BN(tx.getBaseFee());
+
+          tx.sign(privateKey);
           var serializedTx = tx.serialize();
 
-          confirmations[txn.address] = 0;
+          web3.eth.estimateGas(web3.eth.sendSignedTransaction.request('0x' + serializedTx.toString('hex'))).then(gas => {
+            console.log(gas);
+            tx.gasLimit = gas;
 
-          web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'))
-            .on('receipt', (r) => {
-              console.log(r);
-              showReceipt(r, txn.address);
-              updateBalance();
-            }).on("error", (e, r) => {
-              console.log(e);
-              count--;
-              showError(e, txn.address, r);
-            });
+            tx.sign(privateKey);
+            serializedTx = tx.serialize();
 
-          if (i == a.length - 1) {
-            window.setTimeout(() => {
-              document.getElementsByName("nonce")[0].value = count;
-            }, 100);
-          }
+            web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'))
+              .on('receipt', (r) => {
+                console.log(r);
+                showReceipt(r, txn.address);
+                updateBalance();
+              }).on("error", (e, r) => {
+                console.log(e);
+                count--;
+                showError(e, txn.address, r);
+              });
+
+            if (i == a.length - 1) {
+              window.setTimeout(() => {
+                document.getElementsByName("nonce")[0].value = count;
+              }, 100);
+            }
+          });
         } else {
           showError(`${txn.address} is not a valid Ethereum address!!!!`, txn.address, null);
         }
