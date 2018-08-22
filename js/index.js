@@ -217,35 +217,28 @@ function sendEth(web3, updateBalance, contract, token) {
           tx.nonce = count++;
           tx.data = call.encodeABI();
 
-          tx.gasLimit = new BN(tx.getBaseFee());
+          tx.gasLimit = new BN(data.gas);
 
           tx.sign(privateKey);
           var serializedTx = tx.serialize();
 
-          web3.eth.estimateGas(web3.eth.sendSignedTransaction.request('0x' + serializedTx.toString('hex'))).then(gas => {
-            console.log(gas);
-            tx.gasLimit = gas;
 
-            tx.sign(privateKey);
-            serializedTx = tx.serialize();
+          web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'))
+            .on('receipt', (r) => {
+              console.log(r);
+              showReceipt(r, txn.address);
+              updateBalance();
+            }).on("error", (e, r) => {
+              console.log(e);
+              count--;
+              showError(e, txn.address, r);
+            });
 
-            web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'))
-              .on('receipt', (r) => {
-                console.log(r);
-                showReceipt(r, txn.address);
-                updateBalance();
-              }).on("error", (e, r) => {
-                console.log(e);
-                count--;
-                showError(e, txn.address, r);
-              });
-
-            if (i == a.length - 1) {
-              window.setTimeout(() => {
-                document.getElementsByName("nonce")[0].value = count;
-              }, 100);
-            }
-          });
+          if (i == a.length - 1) {
+            window.setTimeout(() => {
+              document.getElementsByName("nonce")[0].value = count;
+            }, 200);
+          }
         } else {
           showError(`${txn.address} is not a valid Ethereum address!!!!`, txn.address, null);
         }
