@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>gottoken.me one-to-many for ETH — made with ❤️ for the Decentralized World.</title>
+    <title>gottoken.me one-to-many for ERC20 — made with ❤️ for the Decentralized World.</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="stylesheet" href="css/normalize.css">
@@ -15,7 +15,7 @@
     <div class="container">
       <div class="row justify-content-center">
         <div class="col-12 col-lg-10">
-          <h1>IKA Web</h1>
+          <h1>IKA Web — ERC20</h1>
 
           <div class="row">
             <div class="col-md">
@@ -60,8 +60,14 @@
 
 
             <div class="cards row">
-              <div class="col-md-10">
+              <div class="col-md-6">
                 <input type="text" class="card narrow" placeholder="contract address" name="contract" required />
+              </div>
+              <div class="col-md-1">
+                <span>gas:</span>
+              </div>
+              <div class="col-md-3">
+                <input type="number" class="card narrow" placeholder="gas limit" value="200000" name="gas" required />
               </div>
             </div>
 
@@ -113,7 +119,7 @@
 
               <div class="no-gutters col-md-2">
                 <div class="no-gutters col">
-                  <input type="number" class="card amount" placeholder="eth" id="setall-amount" step="0.00000001" min="0" />
+                  <input type="number" class="card amount" placeholder="tokens" id="setall-amount" step="0.00000001" min="0" />
                 </div>
 
                 <div class="w-100"></div>
