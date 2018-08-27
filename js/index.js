@@ -4,7 +4,7 @@ window.addEventListener("load", main);
 
 function main() {
   var Web3 = require("web3");
-  var web3 = new Web3("https://rinkeby.infura.io/v3/84e0a3375afd4f57b4753d39188311d7");
+  var web3 = new Web3("https://mainnet.infura.io/v3/84e0a3375afd4f57b4753d39188311d7");
   var hexa = /^0x[0-9A-F]+$/i;
 
   var plusEl = document.getElementById("add");
@@ -112,6 +112,19 @@ function main() {
         contract.methods.balanceOf(address).call().then(bal => {
           row.children[2].firstElementChild.placeholder = (bal / 10 ** token.decimals).toFixed(2).toString();
         });
+
+        var addrDisplay = document.createElement("div");
+        addrDisplay.className = "col-md-5";
+        var addr = document.createElement("p");
+        addr.innerText = address;
+        addr.className = "converted";
+        addrDisplay.appendChild(addr);
+
+        inp.className += " flipOut";
+        window.setTimeout(() => {
+          inp.parentElement.style.display = "none";
+          row.insertBefore(addrDisplay, row.children[1]);
+        }, 600);
       }
     });
 
@@ -120,11 +133,23 @@ function main() {
 
 
   firstWalletEl.firstElementChild.firstElementChild.addEventListener("input", () => {
-      if (Object.keys(contract).length !== 0 && firstWalletEl.firstElementChild.firstElementChild.value.length == 66) {
+      if (Object.keys(contract).length !== 0 && hexa.test(firstWalletEl.firstElementChild.firstElementChild.value)) {
         var address = web3.eth.accounts.privateKeyToAccount(firstWalletEl.firstElementChild.firstElementChild.value).address;
         contract.methods.balanceOf(address).call().then(bal => {
           firstWalletEl.children[1].firstElementChild.placeholder = (bal / 10 ** token.decimals).toFixed(2).toString();
         });
+        var addrDisplay = document.createElement("div");
+        addrDisplay.className = "col-md-6";
+        var addr = document.createElement("p");
+        addr.innerText = address;
+        addr.className = "converted";
+        addrDisplay.appendChild(addr);
+
+        firstWalletEl.firstElementChild.className += " flipOut";
+        window.setTimeout(() => {
+          firstWalletEl.firstElementChild.style.display = "none";
+          firstWalletEl.insertBefore(addrDisplay, firstWalletEl.firstElementChild);
+        }, 600);
       }
   });
 
@@ -177,7 +202,6 @@ function sendEth(web3, updateBalance, contract, token) {
     if (data == undefined || data.transactions.length == 0) {
       return;
     }
-    console.log(data);
 
     var hexa = /^[0-9A-F]+$/i;
 
@@ -258,14 +282,14 @@ function showReceipt(r, address) {
     // TODO: change to mainnet
     wallet.lastElementChild.lastElementChild.innerHTML = `<a rel="noopener" target="_blank" class="receipt" href="https://etherscan.io/tx/${r.transactionHash}"><img src="${tick}" alt="success, click to view on Etherscan" width="24" height="24"></a>`;
     wallet.lastElementChild.lastElementChild.title = "success, click to view on Etherscan";
-    if (wallet.children.length == 4) {
-      for (var i = 0; i <= 2; i++) {
+    if (wallet.children.length == 5) {
+      for (var i = 0; i <= 3; i++) {
         wallet.children[i].firstElementChild.required = "false";
         wallet.children[i].firstElementChild.disabled = "true";
         wallet.children[i].firstElementChild.className += " success";
       }
     } else {
-      for (var i = 1; i <= 3; i++) {
+      for (var i = 1; i <= 4; i++) {
         wallet.children[i].firstElementChild.required = "false";
         wallet.children[i].firstElementChild.disabled = "true";
         wallet.children[i].firstElementChild.className += " success";
@@ -284,13 +308,13 @@ function setWaiting() {
     el = childEl.parentElement.parentElement;
     el.lastElementChild.lastElementChild.innerHTML = `<img src="${clock}" alt="sending..." width="24" height="24">`;
 
-    if (el.children.length == 4) {
-      for (var i = 0; i <= 2; i++) {
+    if (el.children.length == 5) {
+      for (var i = 0; i <= 3; i++) {
         el.children[i].firstElementChild.required = "false";
         el.children[i].firstElementChild.disabled = "true";
       }
     } else {
-      for (var i = 1; i <= 3; i++) {
+      for (var i = 1; i <= 4; i++) {
         el.children[i].firstElementChild.required = "false";
         el.children[i].firstElementChild.disabled = "true";
       }
