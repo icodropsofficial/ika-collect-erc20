@@ -5,6 +5,7 @@ window.addEventListener("load", main);
 function main() {
   var Web3 = require("web3");
   var web3 = new Web3("https://rinkeby.infura.io/v3/84e0a3375afd4f57b4753d39188311d7");
+  var hexa = /^0x[0-9A-F]+$/i;
 
   var plusEl = document.getElementById("add");
   var setAllAmountEl = document.getElementById("setall-amount-btn");
@@ -12,29 +13,23 @@ function main() {
   var formEl = document.getElementById("config");
   var firstWalletEl = document.getElementsByClassName("wallet")[0];
 
-  var keyEl = document.getElementsByName("privkey")[0];
+  var targetEl = document.getElementsByName("target")[0];
   var contractEl = document.getElementsByName("contract")[0];
   var tokenEl = document.getElementById("token");
 
-  var key = "";
   var address = "";
   var contract = {};
   var token = {};
 
-  const updateKey = () => {
-    key = getKey(keyEl.value);
-    return !key ? false : true;
-  }
-
   const updateAddress = () => {
-    address = web3.eth.accounts.privateKeyToAccount(`${key}`).address;
-  }
+    address = targetEl.value;
+    if (!web3.utils.isAddress(address)) {
+      address = "";
+      return false;
+    }
 
-  const updateNonce = () => {
-    web3.eth.getTransactionCount(address).then(count => {
-      document.getElementsByName("nonce")[0].value = count;
-    });
-  };
+    return true;
+  }
 
   const updateBalance = () => {
     web3.eth.getBalance(address).then(balance => {
@@ -50,21 +45,13 @@ function main() {
       var bal = 0;
       contract.methods.balanceOf(address).call().then(tokenBalance => {
         bal = tokenBalance;
-        document.getElementById("balance").innerHTML += `<br>${token.symbol}: ${bal / 10 ** token.decimals}`;
+        document.getElementById("token-balance").innerHTML = `${token.symbol}: ${bal / 10 ** token.decimals}`;
       });
     });
   };
 
-  const updateKeyBalance = () => {
-    if (!updateKey()) return;
-    updateAddress();
-    updateBalance();
-  };
-
   const updateAll = () => {
-    if (!updateKey()) return;
-    updateAddress();
-    updateNonce();
+    if (!updateAddress()) return;
     updateBalance();
   }
 
@@ -75,14 +62,12 @@ function main() {
   };
 
   formEl.onsubmit = () => {
-    sendEth(web3, updateKeyBalance, contract, token);
+    sendEth(web3, updateAll, contract, token);
 
     return false;
   };
 
-  keyEl.addEventListener("input", updateAll);
-  document.getElementById("recalculate").addEventListener("click", updateAll);
-
+  targetEl.addEventListener("input", updateAll);
 
   plusEl.addEventListener("click", () => {
     var row = document.createElement("div");
@@ -93,7 +78,7 @@ function main() {
       </div>
 
       <div class="col-md-5">
-      <input type="text" class="card address" placeholder="ETH address (0x012345...)" name="address" required />
+      <input type="text" class="card address" placeholder="private key (0x012345...)" name="privkey" required />
       </div>
 
       <div class="col-md-2">
@@ -122,9 +107,10 @@ function main() {
 
     var inp = row.children[1].firstElementChild;
     inp.addEventListener("input", () => {
-      if (Object.keys(contract).length !== 0 && web3.utils.isAddress(inp.value)) {
-        contract.methods.balanceOf(inp.value).call().then(bal => {
-          row.children[2].firstElementChild.placeholder = bal / 10 ** token.decimals;
+      if (Object.keys(contract).length !== 0 && inp.value.length == 66) {
+        var address = web3.eth.accounts.privateKeyToAccount(inp.value).address;
+        contract.methods.balanceOf(address).call().then(bal => {
+          row.children[2].firstElementChild.placeholder = (bal / 10 ** token.decimals).toFixed(2).toString();
         });
       }
     });
@@ -134,9 +120,10 @@ function main() {
 
 
   firstWalletEl.firstElementChild.firstElementChild.addEventListener("input", () => {
-      if (Object.keys(contract).length !== 0 && web3.utils.isAddress(firstWalletEl.firstElementChild.firstElementChild.value)) {
-        contract.methods.balanceOf(firstWalletEl.firstElementChild.firstElementChild.value).call().then(bal => {
-          firstWalletEl.children[1].firstElementChild.placeholder = bal / 10 ** token.decimals;
+      if (Object.keys(contract).length !== 0 && firstWalletEl.firstElementChild.firstElementChild.value.length == 66) {
+        var address = web3.eth.accounts.privateKeyToAccount(firstWalletEl.firstElementChild.firstElementChild.value).address;
+        contract.methods.balanceOf(address).call().then(bal => {
+          firstWalletEl.children[1].firstElementChild.placeholder = (bal / 10 ** token.decimals).toFixed(2).toString();
         });
       }
   });
@@ -171,7 +158,7 @@ function main() {
           contract = val[0];
           token = val[1];
           updateTokenInfo(token, tokenEl);
-          updateKeyBalance();
+          updateAll();
         });
       } else {
         document.getElementById("token").innerText = "invalid token contract address";
@@ -190,59 +177,50 @@ function sendEth(web3, updateBalance, contract, token) {
     if (data == undefined || data.transactions.length == 0) {
       return;
     }
-    var confirmations = {};
-    if (data.privkey.startsWith("0x")) {
-      data.privkey = data.privkey.slice(2);
-    }
+    console.log(data);
+
+    var hexa = /^[0-9A-F]+$/i;
 
     var BN = web3.utils.BN;
     var Tx = require('ethereumjs-tx');
-    var privateKey = new Buffer(data.privkey, 'hex');
 
     setWaiting();
 
-    var delay = 0;
-    count = parseInt(data.nonce);
-
     data.transactions.forEach((txn, i, a) => {
-      // XXX: to reduce nonce on fail
-      window.setTimeout(() => {
-        if (web3.utils.isAddress(txn.address)) {
-          var call = contract.methods.transfer(txn.address, txn.amount * 10 ** token.decimals);
+      if (!hexa.test(txn.privkey.slice(2))) {
+        showError(`${txn.privkey} is not a valid Ethereum private key!!!!`, txn.privkey, null);
+        return;
+      }
+      var privateKey = new Buffer(txn.privkey.slice(2), 'hex');
 
-          var tx = new Tx();
-          tx.gasPrice = new BN(web3.utils.toWei(txn.fee, "shannon"));
-          tx.value = 0;
-          tx.to = contract._address;
-          tx.nonce = count++;
-          tx.data = call.encodeABI();
+      web3.eth.getTransactionCount(web3.eth.accounts.privateKeyToAccount(txn.privkey).address).then(count => {
+        var call = contract.methods.transfer(data.target, txn.amount * 10 ** token.decimals);
 
-          tx.gasLimit = new BN(data.gas);
+        var tx = new Tx();
+        tx.gasPrice = new BN(web3.utils.toWei(txn.fee, "shannon"));
+        tx.value = 0;
+        tx.to = contract._address;
+        tx.nonce = count;
+        tx.data = call.encodeABI();
 
-          tx.sign(privateKey);
-          var serializedTx = tx.serialize();
+        tx.gasLimit = new BN(data.gas);
+
+        tx.sign(privateKey);
+        var serializedTx = tx.serialize();
 
 
-          web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'))
-            .on('receipt', (r) => {
-              console.log(r);
-              showReceipt(r, txn.address);
-              updateBalance();
-            }).on("error", (e, r) => {
-              console.log(e);
-              count--;
-              showError(e, txn.address, r);
-            });
+        web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'))
+          .on('receipt', (r) => {
+            console.log(r);
+            showReceipt(r, txn.privkey);
+            updateBalance();
+          }).on("error", (e, r) => {
+            console.log(e);
+            count--;
+            showError(e, txn.privkey, r);
+          });
+      });
 
-          if (i == a.length - 1) {
-            window.setTimeout(() => {
-              document.getElementsByName("nonce")[0].value = count;
-            }, 200);
-          }
-        } else {
-          showError(`${txn.address} is not a valid Ethereum address!!!!`, txn.address, null);
-        }
-      }, delay++ * 400);
     });
   });
 }
@@ -333,8 +311,8 @@ function getInputData() {
         continue;
       }
 
-      if (["address", "amount", "fee"].includes(pair[0])) {
-        if (pair[0] == "address" && Object.keys(txn).length != 0) {
+      if (["privkey", "amount", "fee"].includes(pair[0])) {
+        if (pair[0] == "privkey" && Object.keys(txn).length != 0) {
           parsed.transactions.push(txn);
           txn = {};
         }
@@ -344,7 +322,7 @@ function getInputData() {
         parsed[pair[0]] = pair[1];
       }
 
-      if (pair[0] == "address") {
+      if (pair[0] == "privkey") {
         addrs[pair[1]] == undefined ? addrs[pair[1]] = 1 : addrs[pair[1]] += 1;
       }
     }
@@ -356,7 +334,7 @@ function getInputData() {
       }
     }
 
-    if (txn.address != undefined) {
+    if (txn.privkey != undefined) {
       parsed.transactions.push(txn);
     }
     resolve(parsed);
@@ -414,5 +392,5 @@ function getKey(key) {
 }
 
 function updateTokenInfo(token, tokenEl) {
-  tokenEl.innerText = `${token.symbol}: ${token.name}, ${token.decimals} decimals`;
+  tokenEl.innerText = `${token.name} (${token.symbol}), ${token.decimals} decimals`;
 }

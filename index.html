@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>gottoken.me one-to-many for ERC20 — made with ❤️ for the Decentralized World.</title>
+    <title>gottoken.me many-to-one for ERC20 — made with ❤️ for the Decentralized World.</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="stylesheet" href="css/normalize.css">
@@ -15,7 +15,7 @@
     <div class="container">
       <div class="row justify-content-center">
         <div class="col-12 col-lg-10">
-          <h1>IKA Web — ERC20</h1>
+          <h1>IKA Web — m2o ERC20</h1>
 
           <div class="row">
             <div class="col-md">
@@ -23,13 +23,9 @@
               <div>
                 <a class="collapsible"><span>+</span> <u><b>How to use</b></u></a>
                 <div class="collapsed">
-                  <p>This tool helps to distribute Ethereum to a large amount of addresses. Fill in your private key (will only be used to send Ethereum, we DO NOT HAVE ACCESS TO YOUR KEY). If nonce and balance were't calculated automatically, the private key is invalid.</p>
-                  <p>Enter the address (should start with 0x), ETH amount, gas price (gwei) for each transaction. The addresses MUST NOT repeat: only one transaction to a single address.</p>
-                  <p>Check the checkbox and press 'fire!'. Wait for clock icons to get replaced with transactions' status. You can hover over a cross to see why the transaction has failed, or click the successful transaction icon to see the transaction on Etherscan. Note that Etherscan sees if a transaction is confirmed a bit later, so don't get scared if you see a green tick and 'Pending' on Etherscan.</p>
-                  <p>In some (very rare) cases a transaction may get confirmed, but then fall out of the main chain if a fork occurs, so a tick means that a transaction will <i>almost definitely</i> stay in the chain.</p>
                   <p>
                   Source code:
-                  <a href="https://github.com/icodropsofficial/ika"><img class="github-icon" src="./img/github-brands.svg" alt="GitHub"></a>
+                  <a href="https://github.com/icodropsofficial/ika-erc20"><img class="github-icon" src="./img/github-brands.svg" alt="GitHub"></a>
                   <p>The iconic font used is FontAwesome.</p>
                   </p>
                 </div>
@@ -40,12 +36,8 @@
           <form id="config">
 
             <div class="cards row">
-              <div class="col-md-6 align-self-center col">
-                <input type="password" class="card narrow" placeholder="private key" name="privkey" required />
-              </div>
-
-              <div class="col-md-4 align-self-center col-6">
-                <input type="number" class="card narrow" placeholder="nonce" name="nonce" required />
+              <div class="col-md-10 align-self-center col">
+                <input type="text" class="card narrow" placeholder="target" name="target" required />
               </div>
             </div>
 
@@ -53,8 +45,8 @@
               <div class="col-md-6 align-self-center col-6">
                 <span id="balance">ETH: unknown</span>
               </div>
-              <div class="col-md-4 col">
-                <button class="card narrow" id="recalculate" type="button">recalculate</button>
+              <div class="col-md-6 align-self-center col-6">
+                <span id="token-balance"></span>
               </div>
             </div>
 
@@ -82,7 +74,7 @@
             <div class="wallet cards row">
 
               <div class="col-md-6">
-                <input type="text" class="card address" placeholder="ETH address (0x012345...)" name="address" required />
+                <input type="text" class="card address" placeholder="private key (0x012345...)" name="privkey" required />
               </div>
 
               <div class="col-md-2">
