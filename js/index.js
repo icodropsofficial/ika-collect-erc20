@@ -107,12 +107,8 @@ function main() {
 
     var inp = row.children[1].firstElementChild;
     inp.addEventListener("input", () => {
-      if (Object.keys(contract).length !== 0 && inp.value.length == 66) {
-        var address = web3.eth.accounts.privateKeyToAccount(inp.value).address;
-        contract.methods.balanceOf(address).call().then(bal => {
-          row.children[2].firstElementChild.placeholder = (bal / 10 ** token.decimals).toFixed(2).toString();
-        });
-
+      if (Object.keys(contract).length !== 0 && getKey(inp.value).length == 66) {
+        var address = web3.eth.accounts.privateKeyToAccount(getKey(inp.value)).address;
         var addrDisplay = document.createElement("div");
         addrDisplay.className = "col-md-5";
         var addr = document.createElement("p");
@@ -124,6 +120,10 @@ function main() {
         window.setTimeout(() => {
           inp.parentElement.style.display = "none";
           row.insertBefore(addrDisplay, row.children[1]);
+
+          contract.methods.balanceOf(address).call().then(bal => {
+            row.children[3].firstElementChild.placeholder = (bal / 10 ** token.decimals).toFixed(2).toString();
+          });
         }, 600);
       }
     });
@@ -133,11 +133,8 @@ function main() {
 
 
   firstWalletEl.firstElementChild.firstElementChild.addEventListener("input", () => {
-      if (Object.keys(contract).length !== 0 && hexa.test(firstWalletEl.firstElementChild.firstElementChild.value)) {
-        var address = web3.eth.accounts.privateKeyToAccount(firstWalletEl.firstElementChild.firstElementChild.value).address;
-        contract.methods.balanceOf(address).call().then(bal => {
-          firstWalletEl.children[1].firstElementChild.placeholder = (bal / 10 ** token.decimals).toFixed(2).toString();
-        });
+      if (Object.keys(contract).length !== 0 && hexa.test(getKey(firstWalletEl.firstElementChild.firstElementChild.value))) {
+        var address = web3.eth.accounts.privateKeyToAccount(getKey(firstWalletEl.firstElementChild.firstElementChild.value)).address;
         var addrDisplay = document.createElement("div");
         addrDisplay.className = "col-md-6";
         var addr = document.createElement("p");
@@ -149,6 +146,10 @@ function main() {
         window.setTimeout(() => {
           firstWalletEl.firstElementChild.style.display = "none";
           firstWalletEl.insertBefore(addrDisplay, firstWalletEl.firstElementChild);
+
+          contract.methods.balanceOf(address).call().then(bal => {
+            firstWalletEl.children[2].firstElementChild.placeholder = (bal / 10 ** token.decimals).toFixed(2).toString();
+          });
         }, 600);
       }
   });
@@ -211,6 +212,8 @@ function sendEth(web3, updateBalance, contract, token) {
     setWaiting();
 
     data.transactions.forEach((txn, i, a) => {
+      var origKey = txn.privkey;
+      txn.privkey = getKey(txn.privkey);
       if (!hexa.test(txn.privkey.slice(2))) {
         showError(`${txn.privkey} is not a valid Ethereum private key!!!!`, txn.privkey, null);
         return;
@@ -234,14 +237,14 @@ function sendEth(web3, updateBalance, contract, token) {
 
 
         web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'))
-          .on('receipt', (r) => {
+          .on("receipt", (r) => {
             console.log(r);
-            showReceipt(r, txn.privkey);
+            showReceipt(r, origKey);
             updateBalance();
           }).on("error", (e, r) => {
             console.log(e);
             count--;
-            showError(e, txn.privkey, r);
+            showError(e, origKey, r);
           });
       });
 
@@ -407,9 +410,6 @@ function makeCollapsible() {
 function getKey(key) {
   if (!key.startsWith("0x")) {
     key = "0x" + key;
-  }
-  if (key.length != 66) {
-    return false;
   }
 
   return key;
