@@ -1,0 +1,39 @@
+{
+  "day": {
+    "--color": "#777",
+    "--bg": "#ebecee",
+    "--link": "#44b9e0",
+
+    "--card-btn": "#c6cad2",
+
+    "--card": "#424242",
+    "--card-bg": "#ffffff",
+    "--card-shadow": "#d6d8dc",
+
+    "--success": "#04c89d",
+    "--failure": "#f46746",
+
+    "--on-dark": "white",
+    "--glow": "hidden",
+    "--blend-mode": "unset"
+  },
+
+  "night": {
+    "--color": "#3f639e",
+    "--bg": "#0f123b",
+    "--link": "#1783cf",
+
+    "--card-btn": "#1783cf",
+
+    "--card": "white",
+    "--card-bg": "#1e2467",
+    "--card-shadow": "#0f123b",
+
+    "--success": "#007b7a",
+    "--failure": "#a73c22",
+
+    "--on-dark": "#0f123b",
+    "--glow": "visible",
+    "--blend-mode": "hard-light"
+  }
+}

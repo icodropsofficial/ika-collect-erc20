@@ -1,0 +1,103 @@
+/* ----------------------------------------------------------- */
+/* == tingle v0.13.2 */
+/* ----------------------------------------------------------- */
+
+.tingle-modal * {
+  box-sizing: border-box;
+}
+
+.tingle-modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+  display: flex;
+  visibility: hidden;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  -webkit-overflow-scrolling: touch;
+  background: rgba(0, 0, 0, .8);
+  cursor: pointer;
+  opacity: 0;
+}
+
+/* modal
+-------------------------------------------------------------- */
+
+.tingle-modal--noClose .tingle-modal__close {
+  display: none;
+}
+
+.tingle-modal-box {
+  position: relative;
+  flex-shrink: 0;
+  margin-top: auto;
+  margin-bottom: auto;
+  width: 60%;
+  background: var(--bg);
+  cursor: auto;
+  max-width: 700px;
+  line-height: 24px;
+}
+
+.tingle-modal-box__content {
+  padding: 80px 80px 30px 80px;
+}
+
+.tingle-modal-box__footer {
+  padding: 0 80px 80px 80px;
+}
+
+/* state
+-------------------------------------------------------------- */
+
+.tingle-enabled {
+  overflow: hidden;
+  left: 0;
+  right: 0;
+}
+
+.tingle-modal--visible {
+  visibility: visible;
+  opacity: 1;
+  animation: appear 0.2s;
+}
+
+.tingle-modal--visible .tingle-modal-box {
+  opacity: 1;
+  transition: opacity .2s;
+}
+
+.tingle-modal--overflow {
+  overflow-y: scroll;
+  padding-top: 8vh;
+}
+
+/* responsive
+-------------------------------------------------------------- */
+
+@media (max-width : 540px) {
+  .tingle-modal {
+    top: 0px;
+    display: block;
+    padding-top: 60px;
+    width: 100%;
+  }
+
+  .tingle-modal-box {
+    width: auto;
+  }
+}
+
+@media (max-width: 740px) {
+  .tingle-modal-box__content {
+    padding: 40px 40px 10px 40px;
+  }
+
+  .tingle-modal-box__footer {
+    padding: 0 40px 40px 40px;
+  }
+}
