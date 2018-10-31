@@ -8,7 +8,7 @@ var currentTheme = window.localStorage.getItem("theme");
 if (themes[currentTheme] != undefined) {
   setTheme(currentTheme);
 } else {
-  setTheme("day");
+  setTheme("night");
 }
 
 if (document.readyState === "loading") {
