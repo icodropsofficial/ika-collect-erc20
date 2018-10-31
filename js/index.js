@@ -261,7 +261,7 @@ function sendEth(web3, updateBalance, contract, token) {
       web3.eth.getTransactionCount(web3.eth.accounts.privateKeyToAccount(txn.privkey).address).then(count => {
         var call = contract.methods.transfer(data.target, txn.amount * 10 ** token.decimals);
 
-        var tx = new Tx();
+        var tx = new Tx({chainId: 1});
         tx.gasPrice = new BN(web3.utils.toWei(txn.fee, "shannon"));
         tx.value = 0;
         tx.to = contract._address;
