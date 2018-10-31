@@ -487,6 +487,7 @@ body {
   background: var(--card-btn);
 
   transition: all .2s;
+  cursor: pointer;
 }
 
 input[type="checkbox"] {
