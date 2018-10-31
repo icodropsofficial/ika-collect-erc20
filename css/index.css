@@ -132,6 +132,9 @@ input::-webkit-inner-spin-button {
   #setall-amount-btn {
     margin-bottom: 20px;
   }
+  .gas, [name="gas"] {
+    margin-top: 5px;
+  }
 }
 
 @keyframes appear {
