@@ -196,6 +196,7 @@ input[type="checkbox"] {
   outline: none;
   transition: all .1s;
   border-radius: 4px;
+  position: relative;
 }
 
 .middle {
@@ -498,7 +499,7 @@ body {
 .card {
   color: var(--card);
   background-color: var(--card-bg);
-  box-shadow: 0px 2px 0px 0px var(--card-shadow);
+  box-shadow: 0px -2px 0px 0px var(--card-shadow);
 
   transition: all .2s;
 }
@@ -518,9 +519,16 @@ input[type="checkbox"] {
 }
 
 input[type="checkbox"]:checked {
-  background-color: var(--card-btn);
+  /*background-color: var(--card-btn);*/
 
   transition: all .2s;
+}
+
+input[type="checkbox"]:checked::after {
+  content: "✔";
+  position: absolute;
+  margin-top: -3px;
+  color: green;
 }
 
 a, .collapsible {
